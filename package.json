@@ -1,0 +1,29 @@
+{
+  "name": "webux-socket",
+  "version": "1.0.0",
+  "description": "Socket generator ",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "homepage": "https://github.com/studiowebux/webux-socket",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/studiowebux/webux-socket.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Studio Webux S.E.N.C",
+  "license": "SEE LICENSE IN license.txt",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "socket.io": "^2.2.0",
+    "socketio-auth": "^0.1.1"
+  },
+  "devDependencies": {
+    "express": "^4.17.1",
+    "http": "0.0.0"
+  }
+}
