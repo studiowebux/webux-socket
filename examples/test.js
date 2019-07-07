@@ -1,12 +1,5 @@
 const path = __dirname+ "/actions"; // where the API actions are located.
 
-function isAuthenticated(token, next) {
-  if (!token) {
-    return next("No token provided");
-  }
-  return next(null, { fullname: "test", email: "something@something.com" });
-}
-
 // loading socket
 // with auth enabled
 // require("../index")(path, isAuthenticated, "accessToken", 3000);
