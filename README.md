@@ -12,20 +12,24 @@ npm i --save webux-socket
 ## Usage
 
 How it works,  
-when you expose action.socket, the parser get that function and append it to a listener named by {filename + action}.  
+when you expose action.socket, the parser get that function and append it to a listener named by {filename + action}.
 
 ### The isAuthenticated function
 
 this function should be define as follow:
+
+```
 function isAuthenticated(token, next){
 // check token validity
-// valid
-next(null, user);
-// not valid
-next(err);
+  // valid
+  next(null, user);
+  // not valid
+  next(err);
 }
+```
 
 ### Example
+
 for more examples check the examples directory.
 
 actions/user/create.js
