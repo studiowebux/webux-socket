@@ -26,26 +26,34 @@ const { FirstLetterCaps } = require("./helpers");
  * @return {Object} return the sockets to be added in the app.
  */
 const Parser = (baseDir, components, log = console) => {
-  if (!components || typeof components !== "object") {
-    throw new Error("The components list is required and must be an array.");
-  }
-
-  // create empty array to store the sockets
-  let sockets = new Array();
-  // read the actions directory and keep only the files that have a socket definition.
-  components.forEach(folder => {
-    const actions = fs.readdirSync(path.join(baseDir, folder));
-    actions.forEach(action => {
-      if (require(path.join(baseDir, folder, action))["socket"]) {
-        log.info("Creating the resource " + folder + "/" + action);
-        sockets[
-          action.split(".js")[0] + FirstLetterCaps(folder)
-        ] = require(path.join(baseDir, folder, action))["socket"];
+  return new Promise((resolve, reject) => {
+    try {
+      if (!components || typeof components !== "object") {
+        return reject(
+          new Error("The components list is required and must be an array.")
+        );
       }
-    });
-  });
 
-  return sockets;
+      // create empty array to store the sockets
+      let sockets = new Array();
+      // read the actions directory and keep only the files that have a socket definition.
+      components.forEach(folder => {
+        const actions = fs.readdirSync(path.join(baseDir, folder));
+        actions.forEach(action => {
+          if (require(path.join(baseDir, folder, action))["socket"]) {
+            log.info("Creating the resource " + folder + "/" + action);
+            sockets[
+              action.split(".js")[0] + FirstLetterCaps(folder)
+            ] = require(path.join(baseDir, folder, action))["socket"];
+          }
+        });
+      });
+
+      return resolve(sockets);
+    } catch (e) {
+      throw e;
+    }
+  });
 };
 
 module.exports = { Parser };

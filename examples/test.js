@@ -1,4 +1,4 @@
-const path = __dirname+ "/actions"; // where the API actions are located.
+const path = __dirname + "/actions"; // where the API actions are located.
 
 // loading socket
 // with auth enabled
@@ -23,9 +23,11 @@ const socket = require("../index")(path);
 //   });
 // });
 
-const express = require('express');
+const express = require("express");
 const app = express();
-const server = require('http').createServer(app)
+const server = require("http").createServer(app);
 
-socket.listen(server);
-server.listen(1337);
+socket.then(_socket => {
+  _socket.listen(server);
+  server.listen(1337);
+});

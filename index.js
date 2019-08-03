@@ -35,34 +35,42 @@ const init = (
   timeout = 5000,
   log = console
 ) => {
-  // initialise the socket
-  const socket = io(isAuthenticated, accessKey, timeout);
+  try {
+    return new Promise((resolve, reject) => {
+      // initialise the socket
+      const socket = io(isAuthenticated, accessKey, timeout);
 
-  // on connection check
-  // the authentication status
-  // load all the sockets
-  socket.on("connection", client => {
-    if (!isAuthenticated) {
-      log.info("Socket.io Authentication disabled.");
-      client.auth = true;
-    }
+      // on connection check
+      // the authentication status
+      // load all the sockets
+      socket.on("connection", client => {
+        if (!isAuthenticated) {
+          log.info("Socket.io Authentication disabled.");
+          client.auth = true;
+        }
 
-    if (!baseDir || typeof baseDir !== "string") {
-      throw new Error("The baseDir is required and must be a string.");
-    }
+        if (!baseDir || typeof baseDir !== "string") {
+          return reject(
+            new Error("The baseDir is required and must be a string.")
+          );
+        }
 
-    // Get all the folders in given directory
-    const components = fs.readdirSync(path.join(baseDir));
-    const sockets = Parser(baseDir, components, log);
+        // Get all the folders in given directory
+        const components = fs.readdirSync(path.join(baseDir));
+        const sockets = Parser(baseDir, components, log);
 
-    // generate the socket entries
-    Object.keys(sockets).forEach(entry => {
-      log.info(entry + " added !");
-      client.on(entry, sockets[entry](client));
+        // generate the socket entries
+        Object.keys(sockets).forEach(entry => {
+          log.info(entry + " added !");
+          client.on(entry, sockets[entry](client));
+        });
+      });
+
+      return resolve(socket);
     });
-  });
-
-  return socket;
+  } catch (e) {
+    throw e;
+  }
 };
 
 module.exports = init;
