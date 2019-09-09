@@ -65,7 +65,7 @@ const init = (
           // generate the socket entries
           Object.keys(sockets).forEach(entry => {
             log.info(entry + " added !");
-            client.on(entry, sockets[entry](client));
+            client.on(entry, sockets[entry](client, socket));
           });
         }
       });
