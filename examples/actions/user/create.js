@@ -38,15 +38,15 @@ const socket = client => {
         return;
       }
       const obj = await createUser(body).catch(e => {
-        client.emit("error", e);
+        client.emit("gotError", e);
       });
       if (!obj) {
-        client.emit("error", "User not create");
+        client.emit("gotError", "User not create");
       }
 
       client.emit("userCreated", obj);
     } catch (e) {
-      client.emit("error", e);
+      client.emit("gotError", e);
     }
   };
 };

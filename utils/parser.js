@@ -41,7 +41,15 @@ const Parser = (baseDir, components, log = console) => {
         const actions = fs.readdirSync(path.join(baseDir, folder));
         actions.forEach(action => {
           if (require(path.join(baseDir, folder, action))["socket"]) {
-            log.info("Creating the resource " + folder + "/" + action);
+            log.info(
+              "Creating the resource " +
+                folder +
+                "/" +
+                action +
+                " => " +
+                action.split(".js")[0] +
+                FirstLetterCaps(folder)
+            );
             sockets[
               action.split(".js")[0] + FirstLetterCaps(folder)
             ] = require(path.join(baseDir, folder, action))["socket"];

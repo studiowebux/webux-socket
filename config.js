@@ -24,6 +24,7 @@ const {
 
 /**
  * this function initialise the socket.io
+ * @param {Object} options the options to configure the socket.io server, Mandatory
  * @param {Function} isAuthenticated a function to validate that the user is authenticated, optional
  * @param {String} accessKey The name of the parameter that contains the token, optional
  * @param {Number} timeout The timeout in seconds to established the connection and validate the token, optional
@@ -31,6 +32,7 @@ const {
  * @return {VoidFunction} return nothing
  */
 const init = (
+  options,
   isAuthenticated,
   accessKey = "accessToken",
   timeout = 5000,
@@ -52,7 +54,7 @@ const init = (
   }
 
   let socket = socketio({
-    path: "/socket.io"
+    path: options.path
   });
 
   // if the authentication is enabled or not.

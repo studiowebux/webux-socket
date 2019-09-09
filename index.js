@@ -21,6 +21,7 @@ const { Parser } = require("./utils/parser");
 
 /**
  * this function initialize the socket endpoint based on an action directory
+ * @param {Object} options the options to configure the socket.io server, Mandatory
  * @param {String} baseDir the baseDir is the folder location that contains the socket definiton (absolute path), Mandatory
  * @param {Function} isAuthenticated a function to validate that the user is authenticated, optional
  * @param {String} accessKey The name of the parameter that contains the token, optional
@@ -29,6 +30,7 @@ const { Parser } = require("./utils/parser");
  * @return {Function} return the socket.
  */
 const init = (
+  options,
   baseDir,
   isAuthenticated,
   accessKey = "accessToken",
@@ -38,12 +40,12 @@ const init = (
   try {
     return new Promise((resolve, reject) => {
       // initialise the socket
-      const socket = io(isAuthenticated, accessKey, timeout);
+      const socket = io(options, isAuthenticated, accessKey, timeout);
 
       // on connection check
       // the authentication status
       // load all the sockets
-      socket.on("connection", client => {
+      socket.on("connection", async client => {
         if (!isAuthenticated) {
           log.info("Socket.io Authentication disabled.");
           client.auth = true;
@@ -57,13 +59,15 @@ const init = (
 
         // Get all the folders in given directory
         const components = fs.readdirSync(path.join(baseDir));
-        const sockets = Parser(baseDir, components, log);
+        const sockets = await Parser(baseDir, components, log);
 
-        // generate the socket entries
-        Object.keys(sockets).forEach(entry => {
-          log.info(entry + " added !");
-          client.on(entry, sockets[entry](client));
-        });
+        if (sockets) {
+          // generate the socket entries
+          Object.keys(sockets).forEach(entry => {
+            log.info(entry + " added !");
+            client.on(entry, sockets[entry](client));
+          });
+        }
       });
 
       return resolve(socket);

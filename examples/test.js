@@ -2,9 +2,9 @@ const path = __dirname + "/actions"; // where the API actions are located.
 
 // loading socket
 // with auth enabled
-// require("../index")(path, isAuthenticated, "accessToken", 3000);
+// require("../index")({ path: "/socket.io" }, path, isAuthenticated, "accessToken", 3000);
 // with auth disabled
-const socket = require("../index")(path);
+const socket = require("../index")({ path: "/socket.io" }, path);
 
 /* frontend example */
 // socket.on("connect", () => {
@@ -28,6 +28,8 @@ const app = express();
 const server = require("http").createServer(app);
 
 socket.then(_socket => {
-  _socket.listen(server);
-  server.listen(1337);
+  _socket.listen(server, { path: "/socket.io" });
+  server.listen(1338, () => {
+    console.log("SERVER is listening on port 1338");
+  });
 });
