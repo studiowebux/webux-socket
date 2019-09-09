@@ -23,7 +23,7 @@ const {
 } = require("./utils/authentication");
 
 /**
- * this function initialise the socket.io 
+ * this function initialise the socket.io
  * @param {Function} isAuthenticated a function to validate that the user is authenticated, optional
  * @param {String} accessKey The name of the parameter that contains the token, optional
  * @param {Number} timeout The timeout in seconds to established the connection and validate the token, optional
@@ -51,7 +51,9 @@ const init = (
     throw new Error("The log parameter is optional and must be an object");
   }
 
-  let socket = socketio();
+  let socket = socketio({
+    path: "/socket.io"
+  });
 
   // if the authentication is enabled or not.
   if (isAuthenticated && typeof isAuthenticated === "function") {
