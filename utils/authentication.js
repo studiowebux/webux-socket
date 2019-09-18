@@ -22,22 +22,30 @@
  * @param {Object} log The log function, optional
  * @return {VoidFunction} return callback with error or decoded user.
  */
-const authenticate = (isAuthenticated, accessKey = "accessToken", log = console) => {
+const authenticate = (
+  isAuthenticated,
+  accessKey = "accessToken",
+  log = console
+) => {
   return (socket, data, callback) => {
-    log.info(socket.id + " is trying to establish a connection.")
-    if (!data && !data[accessKey]) {
-      return callback(
-        "Please provide a token, check the documentation for more details."
-      );
-    }
-
-    isAuthenticated(data[accessKey].toString(), (err, user) => {
-      if (err || !user) {
-        return callback(err || "Not authenticated");
+    try {
+      log.info(socket.id + " is trying to establish a connection.");
+      if (!data || !data[accessKey]) {
+        return callback(
+          "Please provide a token, check the documentation for more details."
+        );
       }
 
-      return callback(null, user);
-    });
+      isAuthenticated(data[accessKey].toString(), (err, user) => {
+        if (err || !user) {
+          return callback(err || "Not authenticated");
+        }
+
+        return callback(null, user);
+      });
+    } catch (e) {
+      throw e;
+    }
   };
 };
 
