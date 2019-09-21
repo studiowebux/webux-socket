@@ -30,9 +30,7 @@ const authenticate = (
   return (socket, data, callback) => {
     try {
       log.debug(
-        "\x1b[32m",
-        "webux-socket - " + socket.id + " is trying to establish a connection.",
-        "\x1b[0m"
+        `\x1b[32mwebux-socket - ${socket.id} is trying to establish a connection.\x1b[0m`
       );
       if (!data || !data[accessKey]) {
         return callback(
@@ -61,9 +59,7 @@ const authenticate = (
  */
 const postAuthenticate = (socket, user) => {
   log.debug(
-    "\x1b[32m",
-    "webux-socket - " + socket.id + " has been authenticated successfully.",
-    "\x1b[0m"
+    `\x1b[32mwebux-socket - ${socket.id} has been authenticated successfully.\x1b[0m`
   );
   socket.client.user = user;
 };
@@ -74,11 +70,7 @@ const postAuthenticate = (socket, user) => {
  * @return {VoidFunction}
  */
 const disconnect = socket => {
-  log.debug(
-    "\x1b[32m",
-    "webux-socket - " + socket.id + " is disconnected.",
-    "\x1b[0m"
-  );
+  log.debug(`\x1b[32mwebux-socket - ${socket.id} is disconnected.\x1b[0m`);
 };
 
 module.exports = {

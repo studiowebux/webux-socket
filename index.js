@@ -39,7 +39,7 @@ const init = (
 ) => {
   try {
     return new Promise((resolve, reject) => {
-      log.info("\x1b[33m", "webux-socket - Initialize Socket.IO", "\x1b[0m");
+      log.info(`\x1b[33mwebux-socket - Initialize Socket.IO\x1b[0m`);
       // initialise the socket
       const socket = io(options, isAuthenticated, accessKey, timeout);
 
@@ -49,9 +49,7 @@ const init = (
       socket.on("connection", async client => {
         if (!isAuthenticated) {
           log.info(
-            "\x1b[31m",
-            "webux-socket - Socket.io Authentication disabled.",
-            "\x1b[0m"
+            `\x1b[31mwebux-socket - Socket.io Authentication disabled.\x1b[0m`
           );
           client.auth = true;
         }
@@ -63,16 +61,12 @@ const init = (
         if (sockets) {
           // generate the socket entries
           Object.keys(sockets).forEach(entry => {
-            log.debug(
-              "\x1b[33m",
-              "webux-socket - " + entry + " added !",
-              "\x1b[0m"
-            );
+            log.debug(`\x1b[33mwebux-socket - ${entry} added\x1b[0m`);
             client.on(entry, sockets[entry](client, socket));
           });
         }
       });
-      log.info("\x1b[33m", "webux-socket - Socket.IO Initialized", "\x1b[0m");
+      log.info(`\x1b[33mwebux-socket - Socket.IO Initialized\x1b[0m`);
       return resolve(socket);
     });
   } catch (e) {
