@@ -10,4 +10,4 @@ function isAuthenticated(token, next) {
 // loading socket
 // the token is required and must be an object: { accessToken : "something" } 
 // and the user has 3 seconds to call the authentication endpoint.
-require("../index")(path, isAuthenticated, "accessToken", 3000);
+module.exports = require("../index")(path, isAuthenticated, "accessToken", 3000);

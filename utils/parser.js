@@ -42,13 +42,15 @@ const Parser = (baseDir, components, log = console) => {
         actions.forEach(action => {
           if (require(path.join(baseDir, folder, action))["socket"]) {
             log.info(
-              "Creating the resource " +
+              "\x1b[33m",
+              "webux-socket - Creating the listener, " +
                 folder +
                 "/" +
                 action +
                 " => " +
                 action.split(".js")[0] +
-                FirstLetterCaps(folder)
+                FirstLetterCaps(folder),
+              "\x1b[0m"
             );
             sockets[
               action.split(".js")[0] + FirstLetterCaps(folder)

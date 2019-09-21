@@ -39,6 +39,7 @@ const init = (
 ) => {
   try {
     return new Promise((resolve, reject) => {
+      log.info("\x1b[33m", "webux-socket - Initialize Socket.IO", "\x1b[0m");
       // initialise the socket
       const socket = io(options, isAuthenticated, accessKey, timeout);
 
@@ -47,14 +48,12 @@ const init = (
       // load all the sockets
       socket.on("connection", async client => {
         if (!isAuthenticated) {
-          log.info("Socket.io Authentication disabled.");
-          client.auth = true;
-        }
-
-        if (!baseDir || typeof baseDir !== "string") {
-          return reject(
-            new Error("The baseDir is required and must be a string.")
+          log.info(
+            "\x1b[31m",
+            "webux-socket - Socket.io Authentication disabled.",
+            "\x1b[0m"
           );
+          client.auth = true;
         }
 
         // Get all the folders in given directory
@@ -64,12 +63,16 @@ const init = (
         if (sockets) {
           // generate the socket entries
           Object.keys(sockets).forEach(entry => {
-            log.info(entry + " added !");
+            log.debug(
+              "\x1b[33m",
+              "webux-socket - " + entry + " added !",
+              "\x1b[0m"
+            );
             client.on(entry, sockets[entry](client, socket));
           });
         }
       });
-
+      log.info("\x1b[33m", "webux-socket - Socket.IO Initialized", "\x1b[0m");
       return resolve(socket);
     });
   } catch (e) {

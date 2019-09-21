@@ -31,28 +31,13 @@ const {
  * @param {Object} log The log function, optional
  * @return {VoidFunction} return nothing
  */
-const init = (
+module.exports = (
   options,
   isAuthenticated,
   accessKey = "accessToken",
   timeout = 5000,
   log = console
 ) => {
-  if (isAuthenticated && typeof isAuthenticated !== "function") {
-    throw new Error(
-      "The isAuthenticated parameter is optional and must be a function"
-    );
-  }
-  if (accessKey && typeof accessKey !== "string") {
-    throw new Error("The accessKey parameter is optional and must be a string");
-  }
-  if (timeout && typeof timeout !== "number") {
-    throw new Error("The timeout parameter is optional and must be a number");
-  }
-  if (log && typeof log !== "object") {
-    throw new Error("The log parameter is optional and must be an object");
-  }
-
   let socket = socketio({
     path: options.path
   });
@@ -69,5 +54,3 @@ const init = (
 
   return socket;
 };
-
-module.exports = init;
