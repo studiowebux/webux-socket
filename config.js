@@ -46,8 +46,8 @@ module.exports = (
   if (isAuthenticated && typeof isAuthenticated === "function") {
     auth(socket, {
       authenticate: authenticate(isAuthenticated, accessKey, log),
-      postAuthenticate: postAuthenticate,
-      disconnect: disconnect,
+      postAuthenticate: postAuthenticate(log),
+      disconnect: disconnect(log),
       timeout: timeout // time for the client to authenticate
     });
   }

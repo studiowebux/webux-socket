@@ -57,11 +57,13 @@ const authenticate = (
  * @param {Object} user
  * @return {VoidFunction}
  */
-const postAuthenticate = (socket, user) => {
-  log.debug(
-    `\x1b[32mwebux-socket - ${socket.id} has been authenticated successfully.\x1b[0m`
-  );
-  socket.client.user = user;
+const postAuthenticate = (log = console) => {
+  return (socket, user) => {
+    log.debug(
+      `\x1b[32mwebux-socket - ${socket.id} has been authenticated successfully.\x1b[0m`
+    );
+    socket.client.user = user;
+  };
 };
 
 /**
@@ -69,8 +71,10 @@ const postAuthenticate = (socket, user) => {
  * @param {Any} socket
  * @return {VoidFunction}
  */
-const disconnect = socket => {
-  log.debug(`\x1b[32mwebux-socket - ${socket.id} is disconnected.\x1b[0m`);
+const disconnect = (log = console) => {
+  return socket => {
+    log.debug(`\x1b[32mwebux-socket - ${socket.id} is disconnected.\x1b[0m`);
+  };
 };
 
 module.exports = {
