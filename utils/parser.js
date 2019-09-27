@@ -28,12 +28,6 @@ const { FirstLetterCaps } = require("./helpers");
 const Parser = (baseDir, components, log = console) => {
   return new Promise((resolve, reject) => {
     try {
-      if (!components || typeof components !== "object") {
-        return reject(
-          new Error("The components list is required and must be an array.")
-        );
-      }
-
       // create empty array to store the sockets
       let sockets = new Array();
       // read the actions directory and keep only the files that have a socket definition.
@@ -41,7 +35,7 @@ const Parser = (baseDir, components, log = console) => {
         const actions = fs.readdirSync(path.join(baseDir, folder));
         actions.forEach(action => {
           if (require(path.join(baseDir, folder, action))["socket"]) {
-            log.info(
+            log.debug(
               `\x1b[33mwebux-socket - Creating the listener, ${folder}/${action} => ${
                 action.split(".js")[0]
               } ${FirstLetterCaps(folder)}\x1b[0m`

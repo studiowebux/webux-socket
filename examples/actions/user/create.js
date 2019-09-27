@@ -1,3 +1,5 @@
+const cluster = require("cluster");
+
 // helper
 const timeout = ms => new Promise(res => setTimeout(res, ms));
 
@@ -5,12 +7,13 @@ const timeout = ms => new Promise(res => setTimeout(res, ms));
 const createUser = body => {
   return new Promise(async (resolve, reject) => {
     if (!body) {
+      console.log("No Body !");
       return reject(new Error("Body is not present !"));
     }
     console.log("Start the creation of the entry");
     console.log("then wait 2 seconds");
     await timeout(2000);
-    return resolve({ msg: "Success !" });
+    return resolve({ msg: "Success !", cluster: cluster.worker.id });
   });
 };
 
@@ -29,23 +32,28 @@ const route = async (req, res, next) => {
 
 // socket with auth
 
-const socket = client => {
+const socket = (client, io) => {
   return async body => {
-    console.log("called !")
+    console.log("called !");
     try {
       if (!client.auth) {
+        console.error("Unauthorized");
         client.emit("unauthorized", { message: "Unauthorized" });
         return;
       }
       const obj = await createUser(body).catch(e => {
+        console.error(e);
         client.emit("gotError", e);
       });
       if (!obj) {
+        console.error("No Object");
         client.emit("gotError", "User not create");
       }
 
-      client.emit("userCreated", obj);
+      console.log("User Created !");
+      io.emit("userCreated", obj);
     } catch (e) {
+      console.error(e);
       client.emit("gotError", e);
     }
   };

@@ -33,6 +33,9 @@ const authenticate = (
         `\x1b[32mwebux-socket - ${socket.id} is trying to establish a connection.\x1b[0m`
       );
       if (!data || !data[accessKey]) {
+        log.debug(
+          `\x1b[32mwebux-socket - ${socket.id} did not provide a token.\x1b[0m`
+        );
         return callback(
           "Please provide a token, check the documentation for more details."
         );
@@ -40,8 +43,15 @@ const authenticate = (
 
       isAuthenticated(data[accessKey].toString(), (err, user) => {
         if (err || !user) {
+          log.debug(
+            `\x1b[32mwebux-socket - ${socket.id} is not authenticated.\x1b[0m`
+          );
           return callback(err || "Not authenticated");
         }
+
+        log.debug(
+          `\x1b[32mwebux-socket - ${socket.id} is authenticated.\x1b[0m`
+        );
 
         return callback(null, user);
       });
