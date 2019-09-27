@@ -26,7 +26,7 @@ const {
 /**
  * this function initialise the socket.io
  * @param {Object} options the options to configure the socket.io server, Mandatory
- * @param {Object} server the express/http server object, Mandatory
+ * @param {Object} server the http server object, Mandatory
  * @param {Function} isAuthenticated a function to validate that the user is authenticated, optional
  * @param {String} accessKey The name of the parameter that contains the token, optional
  * @param {Number} timeout The timeout in seconds to established the connection and validate the token, optional

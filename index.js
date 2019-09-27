@@ -24,6 +24,7 @@ const cluster = require("cluster");
  * this function initialize the socket endpoint based on an action directory
  * @param {Object} options the options to configure the socket.io server, Mandatory
  * @param {String} baseDir the baseDir is the folder location that contains the socket definiton (absolute path), Mandatory
+ * @param {Object} server the http instance, Mandatory
  * @param {Function} isAuthenticated a function to validate that the user is authenticated, optional
  * @param {String} accessKey The name of the parameter that contains the token, optional
  * @param {Number} timeout The timeout in seconds to established the connection and validate the token, optional
@@ -33,6 +34,7 @@ const cluster = require("cluster");
 const init = (
   options,
   baseDir,
+  server,
   isAuthenticated,
   accessKey = "accessToken",
   timeout = 5000,
@@ -42,7 +44,13 @@ const init = (
     return new Promise(async (resolve, reject) => {
       log.info(`\x1b[33mwebux-socket - Initialize Socket.IO\x1b[0m`);
       // initialise the socket
-      const io = await config(options, isAuthenticated, accessKey, timeout);
+      const io = await config(
+        options,
+        server,
+        isAuthenticated,
+        accessKey,
+        timeout
+      );
 
       // Get all the folders in given directory
       const components = fs.readdirSync(path.join(baseDir));
