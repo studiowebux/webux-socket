@@ -53,15 +53,13 @@ const init = (
         log
       );
 
-      // Get all the folders in given directory
-      const components = fs.readdirSync(path.join(baseDir));
-      const socketActions = await Parser(baseDir, components, log);
-
       // on connection check
       // the authentication status
       // load all the sockets
-      io.on("connection", client => {
-        log.debug(`Worker ID : ${cluster.worker.id}`);
+      io.on("connection", async client => {
+        if (cluster && cluster.worker) {
+          log.debug(`Worker ID : ${cluster.worker.id}`);
+        }
         if (!isAuthenticated) {
           log.warn(
             `\x1b[31mwebux-socket - Socket.io Authentication disabled.\x1b[0m`
@@ -76,6 +74,10 @@ const init = (
         client.on("disconnect", () => {
           log.debug(`Socket ${client.id} disconnected.`);
         });
+
+        // Get all the folders in given directory
+        const components = fs.readdirSync(path.join(baseDir));
+        const socketActions = await Parser(baseDir, components, log);
 
         if (socketActions) {
           // generate the socket entries
