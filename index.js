@@ -49,7 +49,8 @@ const init = (
         server,
         isAuthenticated,
         accessKey,
-        timeout
+        timeout,
+        log
       );
 
       // Get all the folders in given directory
@@ -68,12 +69,12 @@ const init = (
           client.auth = true;
         }
 
-        console.log(`Socket ${client.id} connected.`);
+        log.debug(`Socket ${client.id} connected.`);
 
         io.emit("joined", `New user has join`);
 
         client.on("disconnect", () => {
-          console.log(`Socket ${client.id} disconnected.`);
+          log.debug(`Socket ${client.id} disconnected.`);
         });
 
         if (socketActions) {

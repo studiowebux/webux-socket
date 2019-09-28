@@ -47,7 +47,7 @@ module.exports = (
         path: options.path
       });
 
-      if (options.redis.enabled === true) {
+      if (options.redis && options.redis.enabled === true) {
         log.debug("webux-socket - Redis is enabled.");
         io.adapter(
           redisAdapter({
