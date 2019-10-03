@@ -15,62 +15,32 @@
 "use strict";
 
 const socketio = require("socket.io");
-const auth = require("socketio-auth");
-const redisAdapter = require("socket.io-redis");
-const {
-  authenticate,
-  postAuthenticate,
-  disconnect
-} = require("./utils/authentication");
-
+const attachAdapter = require("./config/redisAdapter");
+const { authenticate } = require("./config/authentication");
 /**
  * this function initialise the socket.io
  * @param {Object} options the options to configure the socket.io server, Mandatory
- * @param {Object} server the http server object, Mandatory
- * @param {Function} isAuthenticated a function to validate that the user is authenticated, optional
- * @param {String} accessKey The name of the parameter that contains the token, optional
- * @param {Number} timeout The timeout in seconds to established the connection and validate the token, optional
+ * @param {Object} expressServer the http expressServer object, Mandatory
  * @param {Object} log The log function, optional
  * @return {VoidFunction} return nothing
  */
-module.exports = (
-  options,
-  server,
-  isAuthenticated,
-  accessKey = "accessToken",
-  timeout = 5000,
-  log = console
-) => {
-  return new Promise(async (resolve, reject) => {
+module.exports = (options, expressServer, log = console) => {
+  return new Promise(async resolve => {
     try {
-      let io = socketio(server, {
-        path: options.path
-      });
+      log.debug("webux-socket - create socket.io instance");
+      let io = socketio(expressServer);
 
+      // if redis enabled, we have to attach the adpater to the io object.
       if (options.redis && options.redis.enabled === true) {
-        log.debug("webux-socket - Redis is enabled.");
-        io.adapter(
-          redisAdapter({
-            host: options.redis.host,
-            port: options.redis.port,
-            auth_pass: options.redis.password
-          })
-        );
-
-        log.info(`\x1b[33mwebux-Socket - Redis adapter configured.\x1b[0m`);
+        await attachAdapter(io, options, log);
       }
 
-      // if the authentication is enabled or not.
-      if (isAuthenticated && typeof isAuthenticated === "function") {
-        log.debug(
-          "webux-Socket - The isAuthenticated is a function, configuring the authentication middleware for socket connections."
-        );
-        auth(io, {
-          authenticate: authenticate(isAuthenticated, accessKey, log),
-          postAuthenticate: postAuthenticate(log),
-          disconnect: disconnect(log),
-          timeout: timeout // time for the client to authenticate
-        });
+      // if the authentication is required, add the io.use function
+      if (
+        options.isAuthenticated &&
+        typeof options.isAuthenticated === "function"
+      ) {
+        await authenticate(io, options, log);
       }
 
       return resolve(io);

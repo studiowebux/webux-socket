@@ -23,71 +23,60 @@ const cluster = require("cluster");
 /**
  * this function initialize the socket endpoint based on an action directory
  * @param {Object} options the options to configure the socket.io server, Mandatory
- * @param {String} baseDir the baseDir is the folder location that contains the socket definiton (absolute path), Mandatory
- * @param {Object} server the http instance, Mandatory
- * @param {Function} isAuthenticated a function to validate that the user is authenticated, optional
- * @param {String} accessKey The name of the parameter that contains the token, optional
- * @param {Number} timeout The timeout in seconds to established the connection and validate the token, optional
+ * @param {Object} expressServer the express instance, Mandatory
  * @param {Object} log The log function, optional
  * @return {Function} return the socket.
  */
-const init = (
-  options,
-  baseDir,
-  server,
-  isAuthenticated,
-  accessKey = "accessToken",
-  timeout = 5000,
-  log = console
-) => {
+const init = (options, expressServer, log = console) => {
   try {
     return new Promise(async (resolve, reject) => {
       log.info(`\x1b[33mwebux-socket - Initialize Socket.IO\x1b[0m`);
-      // initialise the socket
-      const io = await config(
-        options,
-        server,
-        isAuthenticated,
-        accessKey,
-        timeout,
-        log
-      );
+
+      // initialize the socket
+      const io = await config(options, expressServer, log);
 
       // on connection check
       // the authentication status
       // load all the sockets
-      io.on("connection", async client => {
+      log.debug(`\x1b[33mwebux-socket - Start io.on 'connection'\x1b[0m`);
+      io.on("connection", async socket => {
+        // if the cluster mode is enabled,
+        // to facilitate the debugging we can see on which process the client is connected.
         if (cluster && cluster.worker) {
           log.debug(`Worker ID : ${cluster.worker.id}`);
         }
-        if (!isAuthenticated) {
+        // if no function nor string is provide for the authentication,
+        // we can disable it.
+        if (!options.isAuthenticated) {
           log.warn(
             `\x1b[31mwebux-socket - Socket.io Authentication disabled.\x1b[0m`
           );
-          client.auth = true;
+          socket.user = {}; // we return an empty user, it may cause issues with the frontend..
         }
 
-        log.debug(`Socket ${client.id} connected.`);
+        log.debug(`Socket ${socket.id} connected.`);
 
-        io.emit("joined", `New user has join`);
-
-        client.on("disconnect", () => {
-          log.debug(`Socket ${client.id} disconnected.`);
+        socket.on("disconnect", () => {
+          log.debug(`Socket ${socket.id} disconnected.`);
         });
 
         // Get all the folders in given directory
-        const components = fs.readdirSync(path.join(baseDir));
-        const socketActions = await Parser(baseDir, components, log);
+        const components = fs.readdirSync(path.join(options.baseDir));
+        const socketActions = await Parser(options.baseDir, components, log);
 
         if (socketActions) {
+          log.info(
+            `\x1b[33mwebux-socket - Generate Socket.IO Listeners using the basedir ${options.baseDir}\x1b[0m`
+          );
           // generate the socket entries
           Object.keys(socketActions).forEach(entry => {
             log.debug(`\x1b[33mwebux-socket - ${entry} added\x1b[0m`);
-            client.on(entry, socketActions[entry](client, io));
+            socket.on(entry, socketActions[entry](socket, io));
           });
         }
       });
       log.info(`\x1b[33mwebux-socket - Socket.IO Initialized\x1b[0m`);
+      // return the io object to the client.
       return resolve(io);
     });
   } catch (e) {
