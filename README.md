@@ -11,93 +11,40 @@ npm i --save webux-socket
 
 ## Usage
 
-How it works,  
-when you expose action.socket, the parser get that function and append it to a listener named by {filename + action}.
+Currently, I recommend you to check the examples in the _examples/_ directory,
 
-### The isAuthenticated function
+### The configuration
 
-this function should be define as follow:
+Default for production,
 
-```
-function isAuthenticated(token, next){
-// check token validity
-  // valid
-  next(null, user);
-  // not valid
-  next(err);
-}
-```
-
-### Example
-
-for more examples check the examples directory.
-
-actions/user/create.js
-
-```
-// helper
-const timeout = ms => new Promise(res => setTimeout(res, ms));
-
-// action
-const createUser = body => {
-  return new Promise(async (resolve, reject) => {
-    if (!body) {
-      return reject(new Error("Body is not present !"));
-    }
-    await timeout(500);
-    return resolve({ msg: "Success !" });
-  });
-};
-
-// route
-const route = async (req, res, next) => {
-// ...
-};
-
-// socket with auth
-const socket = client => {
-  return async body => {
-    try {
-      if (!client.auth) {
-        client.emit("unauthorized", { message: "Unauthorized" });
-        return;
-      }
-      const obj = await createUser(body).catch(e => {
-        client.emit("error", e);
-      });
-      if (!obj) {
-        client.emit("error", "User not create");
-      }
-
-      client.emit("userCreated", obj);
-    } catch (e) {
-      client.emit("error", e);
-    }
-  };
-};
-
+```javascript
 module.exports = {
-  createUser,
-  socket,
-  route
+  baseDir: path.join(__dirname, "..", "api", "v1", "actions"),
+  isAuthenticated: require(__dirname, path.join("..", "isAuth.js")),
+  accessTokenKey: "accessToken",
+  redis: {
+    enabled: true,
+    mock:
+      process.env.REDIS_MOCK && process.env.REDIS_MOCK == "false"
+        ? false
+        : false,
+    host: process.env.REDIS_HOST || "127.0.0.1",
+    port: process.env.REDIS_PORT || "6379",
+    password: process.env.REDIS_PASSWORD || "password123"
+  }
 };
-
 ```
 
-test.js
+The _baseDir_ is the directory that contains the socket actions (the .on)
 
-```
-const path = __dirname+ "/actions";
-// Authentication is disabled
-const socket = require("../index")(path);
+The _isAuthenticated_ has to be a function, you can do it like the example above, or you can also write the function directly in the configuration file.
+It must contains the accessTokenValue as the first parameter and a callback for second.
 
-const express = require('express');
-const app = express();
-const server = require('http').createServer(app)
+The _accessTokenKey_ is not the VALUE, this is the key name of the cookie, for example the cookie will contain a key/value of 'accessToken':'SOME_JWT_STRING'
 
-socket.listen(server);
-server.listen(1337);
-```
+The _redis_ object is use to configure redis, it will allow you to run multiple instances/processes of your backend and the socket will be emitted to everyone.
+
+**You will not be able to test the cluster mode with the Redis mock implementation.**
 
 ## Contributing
 
