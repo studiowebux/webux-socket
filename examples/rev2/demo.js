@@ -1,6 +1,6 @@
 const options = require("./config");
 
-const webuxSocket = require("../../index"); // webux-socket
+const webuxSocket = require("../../index"); // @studiowebux/socket
 
 const express = require("express");
 const app = express();

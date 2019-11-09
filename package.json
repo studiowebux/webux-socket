@@ -1,5 +1,5 @@
 {
-  "name": "webux-socket",
+  "name": "@studiowebux/socket",
   "version": "1.1.0",
   "description": "Socket generator",
   "main": "index.js",

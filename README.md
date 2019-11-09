@@ -6,12 +6,10 @@ it allows to build automatically the socket resource based on a given directory.
 ## Installation
 
 ```bash
-npm i --save webux-socket
+npm i --save @studiowebux/socket
 ```
 
 ## Usage
-
-Currently, I recommend you to check the examples in the _examples/_ directory,
 
 ### The configuration
 
