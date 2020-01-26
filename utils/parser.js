@@ -22,8 +22,8 @@ const { FirstLetterCaps } = require("./helpers");
  * this function get all the sockets form a given directory
  * @param {String} baseDir the baseDir is the folder location that contains the socket definiton (absolute path), Mandatory
  * @param {Array} components list of files/folders in a directory, Mandatory
- * @param {Object} log The log function, optional
- * @return {Object} return the sockets to be added in the app.
+ * @param {Object} log The log function, Optional
+ * @return {Promise} return the sockets to be added in the app.
  */
 const Parser = (baseDir, components, log = console) => {
   return new Promise((resolve, reject) => {

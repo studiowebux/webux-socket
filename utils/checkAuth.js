@@ -17,7 +17,7 @@
 /**
  * this function authenticate the request.
  * @param {Function} isAuthenticated a function to validate that the user is authenticated, Mandatory
- * @param {Object} log The log function, optional
+ * @param {Object} log The log function, Optional
  * @return {VoidFunction} return callback with error or decoded user, and set the socket.user to the decoded user value.
  */
 const checkAuth = (isAuthenticated, log = console) => {

@@ -9,6 +9,13 @@
 
 const redisAdapter = require("socket.io-redis");
 
+/**
+ *
+ * @param {Function} io The SocketIO Instance, Mandatory
+ * @param {Object} options The Configuration, Mandatory
+ * @param {Object} log The custom logger function, Optional
+ * @returns {Promise}
+ */
 function attachAdapter(io, options, log = console) {
   return new Promise(resolve => {
     try {
@@ -23,8 +30,7 @@ function attachAdapter(io, options, log = console) {
 
       log.info(`\x1b[33mwebux-Socket - Redis adapter configured.\x1b[0m`);
 
-      resolve(io);
-      return;
+      return resolve(io);
     } catch (e) {
       throw e;
     }

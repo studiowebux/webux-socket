@@ -1,9 +1,23 @@
 # Webux Socket
 
-This module is a wrapper for socket.io
-it allows to build automatically the socket resource based on a given directory.
+This module is a wrapper for socket.io.  
+it allows to automatically build the socket resources based on a given directory.
 
 ## Installation
+
+### Linux
+
+```bash
+npm i --save @studiowebux/socket
+```
+
+### Windows
+
+```bash
+npm i --save @studiowebux/socket
+```
+
+### Mac
 
 ```bash
 npm i --save @studiowebux/socket
@@ -11,14 +25,14 @@ npm i --save @studiowebux/socket
 
 ## Usage
 
-### The configuration
+### The default configuration
 
-Default for production,
+/config/socket.js
 
 ```javascript
 module.exports = {
   baseDir: path.join(__dirname, "..", "api", "v1", "actions"),
-  isAuthenticated: require(__dirname, path.join("..", "isAuth.js")),
+  isAuthenticated: require(path.join(__dirname, "..", "isAuth.js")),
   accessTokenKey: "accessToken",
   redis: {
     enabled: true,
@@ -33,16 +47,153 @@ module.exports = {
 };
 ```
 
-The _baseDir_ is the directory that contains the socket actions (the .on)
+| Option          | Description                                                                                                                            | Mandatory |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| baseDir         | The directory that contains the socket actions (the .on)                                                                               | Yes       |
+| isAuthenticated |   It has to be a function isAuth(accessToken, callback)                                                                                | No        |
+| accessTokenKey  |  The key/value of the 'accessToken':'SOME_JWT_STRING'                                                                                  | No        |
+| redis           |  To configure redis, it will allow you to run multiple instances/processes of your backend and the socket will be emitted to everyone. | No        |
 
-The _isAuthenticated_ has to be a function, you can do it like the example above, or you can also write the function directly in the configuration file.
-It must contains the accessTokenValue as the first parameter and a callback for second.
+> You will not be able to test the cluster mode with the Redis mock implementation.
 
-The _accessTokenKey_ is not the VALUE, this is the key name of the cookie, for example the cookie will contain a key/value of 'accessToken':'SOME_JWT_STRING'
+Inside the baseDir directory, the files selected are only the .js file that export the socket function.  
+actions/aModule/feature1.js
 
-The _redis_ object is use to configure redis, it will allow you to run multiple instances/processes of your backend and the socket will be emitted to everyone.
+```javascript
+// Removed the action createProfile(body) from the example
+// Full example, check the examples/ directories
 
-**You will not be able to test the cluster mode with the Redis mock implementation.**
+const socket = (client, io) => {
+  return async body => {
+    try {
+      const obj = await createProfile(body).catch(e => {
+        throw e;
+      });
+      if (!obj) {
+        throw new Error("Profile not created");
+      }
+
+      io.emit("profileCreated", obj);
+      // client.emit("profileCreated", obj); // to broadcast to only the client
+    } catch (e) {
+      client.emit("gotError", e.message);
+    }
+  };
+};
+
+module.exports = {
+  socket
+};
+```
+
+### Functions
+
+#### webuxSocket(options, server, console)
+
+It returns a Promise with the socket instance,
+
+| Option  | Description              | Mandatory |
+| ------- | ------------------------ | --------- |
+| options | The module configuration | Yes       |
+| server  | The express server       | Yes       |
+| console | To use a custom logger   | No        |
+
+### Example
+
+Check the /examples directory.
+
+#### isAuth(accessToken, callback)
+
+```javascript
+function isAuth(accessToken, callback) {
+  try {
+    jwt.verify(accessToken, "HARDCODED_JWT_SECRET", (err, user) => {
+      if (err || !user) {
+        console.error("No user found...");
+        return callback(err || new Error("No user found"));
+      }
+
+      console.debug("Checking token...");
+
+      /* You Can add more validatation steps here, for example confirm the validity of the token in an external database */
+      console.debug("Token valid !");
+      return callback(null, user);
+    });
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+```
+
+#### An action
+
+```javascript
+const cluster = require("cluster");
+
+// helper
+const timeout = ms => new Promise(res => setTimeout(res, ms));
+
+// action
+const createProfile = body => {
+  return new Promise(async (resolve, reject) => {
+    if (!body) {
+      console.log("No Body !");
+      return reject(new Error("Body is not present !"));
+    }
+    console.log("Start the creation of the entry");
+    console.log("then wait 2 seconds");
+    await timeout(2000);
+    return resolve({
+      msg: "Success !",
+      cluster: cluster && cluster.worker ? cluster.worker.id : "Single Node"
+    });
+  });
+};
+
+// express route
+const route = async (req, res, next) => {
+  try {
+    const obj = await createProfile(req.body);
+    if (!obj) {
+      return next(new Error("Profile not created."));
+    }
+    return res.status(201).json(obj);
+  } catch (e) {
+    next(e);
+  }
+};
+
+// Socket Action
+const socket = (client, io) => {
+  return async body => {
+    console.log("called !");
+    try {
+      const obj = await createProfile(body).catch(e => {
+        console.error(e);
+        throw e;
+      });
+      if (!obj) {
+        console.error("No Object");
+        throw new Error("Profile not created");
+      }
+
+      console.log("Profile Created !");
+      io.emit("profileCreated", obj);
+      // client.emit("profileCreated", obj); // to broadcast to only the client
+    } catch (e) {
+      console.error(e);
+      client.emit("gotError", e.message);
+    }
+  };
+};
+
+module.exports = {
+  createProfile,
+  socket,
+  route
+};
+```
 
 ## Contributing
 

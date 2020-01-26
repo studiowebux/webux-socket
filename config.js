@@ -21,8 +21,8 @@ const { authenticate } = require("./config/authentication");
  * this function initialise the socket.io
  * @param {Object} options the options to configure the socket.io server, Mandatory
  * @param {Object} expressServer the http expressServer object, Mandatory
- * @param {Object} log The log function, optional
- * @return {VoidFunction} return nothing
+ * @param {Object} log The log function, Optional
+ * @return {Promise} return nothing
  */
 module.exports = (options, expressServer, log = console) => {
   return new Promise(async resolve => {

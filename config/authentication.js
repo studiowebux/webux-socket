@@ -10,6 +10,13 @@
 const { checkAuth } = require("../utils/checkAuth");
 const cookie = require("cookie");
 
+/**
+ *
+ * @param {Function} io The socketIO instance, Mandatory
+ * @param {Object} options The authentication options, Mandatory
+ * @param {Object} log The log function, optional
+ * @returns {Promise}
+ */
 function authenticate(io, options, log = console) {
   return new Promise(resolve => {
     try {
@@ -29,15 +36,13 @@ function authenticate(io, options, log = console) {
           // the socket instance and the access token value
           await Auth(socket, cookies[options.accessTokenKey]);
           log.debug("webux-Socket - The authenticate feature is initialized.");
-          next();
-          return;
+          return next();
         } else {
           log.debug("webux-socket - No access token provided.");
           next(new Error("Authentication error"));
         }
       });
-      resolve(io);
-      return;
+      return resolve(io);
     } catch (e) {
       throw e;
     }

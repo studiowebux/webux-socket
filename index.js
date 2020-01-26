@@ -25,7 +25,7 @@ const cluster = require("cluster");
  * @param {Object} options the options to configure the socket.io server, Mandatory
  * @param {Object} expressServer the express instance, Mandatory
  * @param {Object} log The log function, optional
- * @return {Function} return the socket.
+ * @return {Promise} return the socket.
  */
 const init = (options, expressServer, log = console) => {
   try {

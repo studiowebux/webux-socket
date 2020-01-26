@@ -13,7 +13,10 @@ const createProfile = body => {
     console.log("Start the creation of the entry");
     console.log("then wait 2 seconds");
     await timeout(2000);
-    return resolve({ msg: "Success !", cluster: cluster && cluster.worker ? cluster.worker.id : "Single Node" });
+    return resolve({
+      msg: "Success !",
+      cluster: cluster && cluster.worker ? cluster.worker.id : "Single Node"
+    });
   });
 };
 
@@ -47,6 +50,7 @@ const socket = (client, io) => {
 
       console.log("Profile Created !");
       io.emit("profileCreated", obj);
+      // client.emit("profileCreated", obj); // to broadcast to only the client
     } catch (e) {
       console.error(e);
       client.emit("gotError", e.message);

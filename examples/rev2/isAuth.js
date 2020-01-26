@@ -17,7 +17,7 @@ function isAuth(accessToken, callback) {
         return callback(err || new Error("No user found"));
       }
 
-      console.debug("Check token...");
+      console.debug("Checking token...");
 
       /* You Can add more validatation steps here, for example confirm the validity of the token in an external database */
       console.debug("Token valid !");
