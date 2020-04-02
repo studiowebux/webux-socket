@@ -29,7 +29,7 @@ module.exports = (options, expressServer, log = console) => {
     try {
       log.debug("webux-socket - create socket.io instance");
       let io = socketio(expressServer);
-
+      
       // if redis enabled, we have to attach the adpater to the io object.
       if (options.redis && options.redis.enabled === true) {
         await attachAdapter(io, options, log);

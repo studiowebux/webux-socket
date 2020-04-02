@@ -23,6 +23,12 @@ function authenticate(io, options, log = console) {
       log.debug(
         "webux-Socket - The isAuthenticated is a function, configuring the authentication middleware for socket connections."
       );
+
+      if (!options) {
+        log.debug("webux-Socket - The provided option object is empty.");
+        log.debug("webux-Socket - Unable to configure the authentication mode.");
+        return resolve(io);
+      }
       // to initialize the checkAuth function
       const Auth = checkAuth(options.isAuthenticated, log);
 

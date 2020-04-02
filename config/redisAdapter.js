@@ -19,6 +19,12 @@ const redisAdapter = require("socket.io-redis");
 function attachAdapter(io, options, log = console) {
   return new Promise(resolve => {
     try {
+      if (!options) {
+        log.debug("webux-Socket - The provided option object is empty.");
+        log.debug("webux-Socket - Unable to configure Redis.");
+        return resolve(io);
+      }
+
       log.debug("webux-socket - Redis is enabled.");
       io.adapter(
         redisAdapter({

@@ -30,54 +30,72 @@ const cluster = require("cluster");
 const init = (options, expressServer, log = console) => {
   try {
     return new Promise(async (resolve, reject) => {
-      log.info(`\x1b[33mwebux-socket - Initialize Socket.IO\x1b[0m`);
+      try {
+        log.info(`\x1b[33mwebux-socket - Initialize Socket.IO\x1b[0m`);
 
-      // initialize the socket
-      const io = await config(options, expressServer, log);
-
-      // on connection check
-      // the authentication status
-      // load all the sockets
-      log.debug(`\x1b[33mwebux-socket - Start io.on 'connection'\x1b[0m`);
-      io.on("connection", async socket => {
-        // if the cluster mode is enabled,
-        // to facilitate the debugging we can see on which process the client is connected.
-        if (cluster && cluster.worker) {
-          log.debug(`Worker ID : ${cluster.worker.id}`);
+        if (!options) {
+          log.debug(`\x1b[33mwebux-socket - The option object is NULL\x1b[0m`);
+          options = {};
         }
-        // if no function nor string is provide for the authentication,
-        // we can disable it.
-        if (!options.isAuthenticated) {
-          log.warn(
-            `\x1b[31mwebux-socket - Socket.io Authentication disabled.\x1b[0m`
-          );
-          socket.user = {}; // we return an empty user, it may cause issues with the frontend..
-        }
+        // initialize the socket
+        const io = await config(options, expressServer, log);
 
-        log.debug(`Socket ${socket.id} connected.`);
+        // on connection check
+        // the authentication status
+        // load all the sockets
+        log.debug(`\x1b[33mwebux-socket - Start io.on 'connection'\x1b[0m`);
+        io.on("connection", async socket => {
+          // if the cluster mode is enabled,
+          // to facilitate the debugging we can see on which process the client is connected.
+          if (cluster && cluster.worker) {
+            log.debug(`Worker ID : ${cluster.worker.id}`);
+          }
+          // if no function nor string is provide for the authentication,
+          // we can disable it.
+          if (!options.isAuthenticated) {
+            log.warn(
+              `\x1b[31mwebux-socket - Socket.io Authentication disabled.\x1b[0m`
+            );
+            socket.user = {}; // we return an empty user, it may cause issues with the frontend..
+          }
 
-        socket.on("disconnect", () => {
-          log.debug(`Socket ${socket.id} disconnected.`);
-        });
+          log.debug(`Socket ${socket.id} connected.`);
 
-        // Get all the folders in given directory
-        const components = fs.readdirSync(path.join(options.baseDir));
-        const socketActions = await Parser(options.baseDir, components, log);
-
-        if (socketActions) {
-          log.info(
-            `\x1b[33mwebux-socket - Generate Socket.IO Listeners using the basedir ${options.baseDir}\x1b[0m`
-          );
-          // generate the socket entries
-          Object.keys(socketActions).forEach(entry => {
-            log.debug(`\x1b[33mwebux-socket - ${entry} added\x1b[0m`);
-            socket.on(entry, socketActions[entry](socket, io));
+          socket.on("disconnect", () => {
+            log.debug(`Socket ${socket.id} disconnected.`);
           });
-        }
-      });
-      log.info(`\x1b[33mwebux-socket - Socket.IO Initialized\x1b[0m`);
-      // return the io object to the client.
-      return resolve(io);
+
+          // Get all the folders in given directory
+          if (options.baseDir) {
+            const components = fs.readdirSync(path.join(options.baseDir));
+            const socketActions = await Parser(
+              options.baseDir,
+              components,
+              log
+            );
+
+            if (socketActions) {
+              log.info(
+                `\x1b[33mwebux-socket - Generate Socket.IO Listeners using the basedir ${options.baseDir}\x1b[0m`
+              );
+              // generate the socket entries
+              Object.keys(socketActions).forEach(entry => {
+                log.debug(`\x1b[33mwebux-socket - ${entry} added\x1b[0m`);
+                socket.on(entry, socketActions[entry](socket, io));
+              });
+            }
+          } else {
+            log.warn(
+              `\x1b[31mwebux-socket - No Base Directory provided, no actions are defined automatically.\x1b[0m`
+            );
+          }
+        });
+        log.info(`\x1b[33mwebux-socket - Socket.IO Initialized\x1b[0m`);
+        // return the io object to the client.
+        return resolve(io);
+      } catch (e) {
+        throw e;
+      }
     });
   } catch (e) {
     throw e;
