@@ -1,5 +1,8 @@
 # Webux Socket
 
+OBSOLETE !!! TBD
+
+
 This module is a wrapper for socket.io.  
 it allows to automatically build the socket resources based on a given directory.
 

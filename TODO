@@ -1,0 +1,21 @@
+X Add rooms/namespaces support easily
+- Review authentication flow
+X Convert the code to class
+- default room 
+X automatic actions, manage which rooms has which actions
+- provide example to handle most of the cases
+- test express and http instance for the instance
+- Add default behavior for new connection and disconnect (and allow to update the action easily)
+
+```
+// HTTP
+var app = require('http').createServer(handler);
+
+app.listen(80);
+
+// EXPRESS
+var app = require('express')();
+var server = require('http').Server(app);
+
+server.listen(80);
+```
