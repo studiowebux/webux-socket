@@ -13,7 +13,7 @@ export default {
     http
       .get("/giveme")
       .then(result => {
-        // setCookies(result.data.accessToken.substring(0, 10));
+        //setCookies(result.data.accessToken.substring(0, 10));
         setCookies(result.data.accessToken);
       })
       .then(() => {

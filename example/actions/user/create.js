@@ -33,7 +33,7 @@ const route = async (req, res, next) => {
 // socket with auth
 
 const socket = (client, io) => {
-  return async body => {
+  return async (body, fn) => {
     console.log("called !");
     try {
       const obj = await createUser(body).catch(e => {
@@ -47,6 +47,7 @@ const socket = (client, io) => {
 
       console.log("User Created !");
       io.emit("userCreated", obj);
+      fn(true); // it returns a callback
     } catch (e) {
       console.error(e);
       client.emit("gotError", e.message);

@@ -13,28 +13,17 @@ app.use(cors());
 
 const opts = {
   authentication: {
-    namespaces: ["profile", "default"],
+    namespaces: ['default'],
     accessTokenKey: "accessToken", // The cookie key name
-    isAuthenticated: require(path.join(__dirname, ".", "isAuth.js")), // the function to check if the user if authenticated
+    isAuthenticated: path.join(__dirname, ".", "isAuth.js"), // the function to check if the user if authenticated using a path
   },
   redis: {
-    host: process.env.REDIS_HOST || "127.0.0.1",
-    port: process.env.REDIS_PORT || "6379",
-    password: process.env.REDIS_PASSWORD || "",
+    // it uses 127.0.0.1:6379 without password
   },
-  recursionAllowed: false, // to allow the recursion within directory in the actions directories.
+  recursionAllowed: true, // to allow the recursion within directory in the actions directories.
+  ignoreFirstDirectory: true,
   namespaces: {
-    default: [
-      path.join(__dirname, "actions", "user"),
-      path.join(__dirname, "actions", "message"),
-      path.join(__dirname, "actions", "_ReservedEvents"),
-    ],
-    profile: [
-      path.join(__dirname, "actions", "profile"),
-      path.join(__dirname, "actions", "profile", "private", "superPrivate"), // With the recursionAllowed set to 'false' you can specify specific path within a path
-      path.join(__dirname, "actions", "profile", "private"), // With the recursionAllowed set to 'false' you can specify specific path within a path
-    ],
-    general: [path.join(__dirname, "actions", "message", "find.js")], // to attach a specific function
+    default: [path.join(__dirname, "actions")], // everything will be exported inside the default namespace '/'
   },
 };
 

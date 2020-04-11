@@ -11,7 +11,7 @@ const redisAdapter = require("socket.io-redis");
 
 /**
  * Configure the redis adapter
- * @returns {VoidFunction}
+ * @return {VoidFunction}
  */
 function attachAdapter() {
   if (!this.config || !this.config.redis) {
@@ -28,8 +28,6 @@ function attachAdapter() {
       auth_pass: this.config.redis.password,
     })
   );
-
-  this.log.info(`\x1b[33mwebux-Socket - Redis adapter configured.\x1b[0m`);
 }
 
 module.exports = attachAdapter;

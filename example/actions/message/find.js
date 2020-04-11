@@ -1,13 +1,13 @@
 // helper
-const timeout = ms => new Promise(res => setTimeout(res, ms));
+const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
 
 // action
 const find = () => {
   return new Promise(async (resolve, reject) => {
-    console.log("Start the search of the entry");
+    console.log("Start searching for messages");
     console.log("then wait 3 seconds");
     await timeout(3000);
-    return reject(new Error("No profiles found !"));
+    return reject(new Error("No messages found !"));
   });
 };
 
@@ -16,7 +16,7 @@ const route = async (req, res, next) => {
   try {
     const obj = await find();
     if (!obj) {
-      return next(new Error("Profile not found."));
+      return next(new Error("Message not found."));
     }
     return res.status(201).json(obj);
   } catch (e) {
@@ -24,23 +24,20 @@ const route = async (req, res, next) => {
   }
 };
 
-// socket with auth
-
+// socket
 const socket = (client, io) => {
-  return async body => {
-    console.log("called !");
+  return async () => {
+    console.log("findMessage called !");
     try {
-      const obj = await find(body).catch(e => {
-        console.error(e);
+      const obj = await find().catch((e) => {
         throw e;
       });
       if (!obj) {
-        console.error("No Object");
-        throw new Error("Profiles not found");
+        throw new Error("Messages not found");
       }
 
-      console.log("Profile Found !");
-      io.emit("userFound", obj);
+      console.log("Messages Found !");
+      io.emit("messageFound", obj);
     } catch (e) {
       console.error(e);
       client.emit("gotError", e.message);
@@ -51,5 +48,5 @@ const socket = (client, io) => {
 module.exports = {
   find,
   route,
-  socket
+  socket,
 };

@@ -10,12 +10,15 @@
 /**
  * this function take a text and return the first letter in upper case.
  * @param {String} text mandatory
- * @return {String} return string
+ * @return {String} return the string with the first letter modified to be Uppercased
  */
 function FirstLetterCaps(text) {
-  return text[0].toUpperCase() + text.substring(1);
+  if (text) {
+    return text[0].toUpperCase() + text.substring(1);
+  }
+  return text;
 }
 
 module.exports = {
-  FirstLetterCaps
+  FirstLetterCaps,
 };

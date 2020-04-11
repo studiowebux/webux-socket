@@ -7,29 +7,10 @@ const app = express();
 const server = require("http").createServer(app);
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
-const path = require("path");
 
 app.use(cors());
 
-const opts = {
-  authentication: {
-    accessTokenKey: "accessToken", // The cookie key name
-    isAuthenticated: require(path.join(__dirname, ".", "isAuth.js")),
-  },
-  redis: {
-    host: process.env.REDIS_HOST || "127.0.0.1",
-    port: process.env.REDIS_PORT || "6379",
-    password: process.env.REDIS_PASSWORD || "",
-  },
-  namespaces: {
-    default: [path.join(__dirname, "actions", "user")],
-    profile: [path.join(__dirname, "actions", "profile")],
-    general: [],
-  },
-};
-
 // to give a jwt token for testing,
-
 app.use("/giveme", (req, res, next) => {
   const token = jwt.sign(
     { aString: "SHuuut ! this is my payload" },
@@ -43,12 +24,15 @@ app.use("/giveme", (req, res, next) => {
 
 function LoadApp() {
   // loading the webux socket module
-  const webuxSocket = new WebuxSocket({}, server);
+  const webuxSocket = new WebuxSocket(null, server);
 
   //webuxSocket.AddAuthentication(); no options are defined, unable to configure the middlewaree
   //webuxSocket.AddRedis(); // no options define, unable to configure the adapter
   //webuxSocket.Start(); // no namespaces configure, nothing will happen
-  // The standalone method allows to do whatever you need,
+
+  // The standalone method allows to do whatever you need, it exposes the socket.IO directly
+
+  // Using default namespace
   webuxSocket.Standalone().on("connection", (socket) => {
     console.debug(`webux-socket - Socket ${socket.id} connected.`);
 
@@ -57,7 +41,21 @@ function LoadApp() {
     });
 
     socket.emit("userFound", [1, 2, 3, 4, 5]);
-  }); 
+  });
+
+  // Using namespace
+  webuxSocket
+    .Standalone()
+    .of("/profile")
+    .on("connection", (socket) => {
+      console.debug(`webux-socket - Socket ${socket.id} connected.`);
+
+      socket.on("disconnect", () => {
+        console.debug(`webux-socket - Socket ${socket.id} disconnected.`);
+      });
+
+      socket.emit("profileFound", [5, 4, 3, 2, 1, 0]);
+    });
 
   console.log("Socket loaded !");
 

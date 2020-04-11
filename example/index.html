@@ -1,0 +1,201 @@
+<ac:structured-macro
+  ac:name="toc"
+  ac:schema-version="1"
+  data-layout="default"
+  ac:macro-id="648c8427-f6e0-4534-bb1a-c39177801ea2"
+/>
+<hr />
+<h1>Introduction</h1>
+<p>
+  Les modules utilis&eacute;s proviennent de
+  <a href="https://nodemailer.com/about/">Nodemailer</a>
+</p>
+<p>
+  Documentation officielle:
+  <a href="https://nodemailer.com/message/">https://nodemailer.com/</a>
+</p>
+<p>
+  Ce module contient aussi un Faux Serveur SMTP avec VueJS et
+  <a href="http://Socket.IO">Socket.IO</a> pour faire des tests locaux.
+</p>
+<ac:image
+  ac:align="center"
+  ac:layout="center"
+  ac:original-height="734"
+  ac:original-width="1310"
+  ><ri:attachment
+    ri:filename="image-20200404-160804.png"
+    ri:version-at-save="1"
+/></ac:image>
+<p />
+<h1>Installation</h1>
+<ac:structured-macro
+  ac:name="code"
+  ac:schema-version="1"
+  ac:macro-id="99085ad7-c83c-452b-a5b5-6de97a420bfa"
+  ><ac:parameter ac:name="language">bash</ac:parameter
+  ><ac:plain-text-body
+    ><![CDATA[npm install --save @studiowebux/mailer]]></ac:plain-text-body
+  ></ac:structured-macro
+>
+<h1>Usage</h1>
+<h2>Fonctions</h2>
+<h3><strong>constructor(opts, log = console)</strong></h3>
+<p>Initialiser le transporter et la function personnalis&eacute;e de logger.</p>
+<ac:structured-macro
+  ac:name="code"
+  ac:schema-version="1"
+  ac:macro-id="c386aff5-5943-4857-a4a3-05f2547c7a17"
+  ><ac:plain-text-body
+    ><![CDATA[const WebuxMaileer = require("@studiowebux/mailer"); const
+    webuxMailer = new WebuxMailer({...});]]></ac:plain-text-body
+  ></ac:structured-macro
+>
+<h3><strong>Verify(): Promise&lt;String&gt;</strong></h3>
+<p>
+  V&eacute;rifier la configuration du transporter et de
+  l&rsquo;authentification.
+</p>
+<ac:structured-macro
+  ac:name="code"
+  ac:schema-version="1"
+  ac:macro-id="220447ed-d42f-4db8-ab90-758f33e7926d"
+  ><ac:parameter ac:name="language">js</ac:parameter
+  ><ac:plain-text-body
+    ><![CDATA[webuxMailer .Verify() .then(info => { console.log(info); })
+    .catch(e => { console.error(e); });]]></ac:plain-text-body
+  ></ac:structured-macro
+>
+<h3><strong>Sendmail(data): Promise&lt;Object&gt;</strong></h3>
+<p>Envoi un email si la fonctionnalit&eacute; est activ&eacute;e.</p>
+<ac:structured-macro
+  ac:name="code"
+  ac:schema-version="1"
+  ac:macro-id="c9086f3a-de34-4ad1-beb0-f0eb3fb7145a"
+  ><ac:parameter ac:name="language">js</ac:parameter
+  ><ac:plain-text-body
+    ><![CDATA[const data = { from: "test@from.local", to: ["test1@to.local",
+    "test2@to.local"], subject: "Testing the webux mailer", html: " <p>Hello
+    World !</p>", text: "Hello World !" }; webuxMailer .Sendmail(data)
+    .then(info => { console.log(info); }) .catch(e => { console.error(e);
+    });]]></ac:plain-text-body
+  ></ac:structured-macro
+>
+<h2>Configuration</h2>
+<h3>Configuration du transport</h3>
+<p>
+  Documentation officielle :&nbsp;<a href="https://nodemailer.com/smtp/"
+    >https://nodemailer.com/smtp/</a
+  >
+</p>
+<ac:structured-macro
+  ac:name="code"
+  ac:schema-version="1"
+  ac:macro-id="7f3b7c8d-3091-4416-a817-db2d2f3bd062"
+  ><ac:parameter ac:name="language">js</ac:parameter
+  ><ac:plain-text-body
+    ><![CDATA[const opts = { isEnabled: true, host: "127.0.0.1", port: 2525,
+    secure: false, auth: { user: "", pass: "" }, pool: false, tls: { // do not
+    fail on invalid certs rejectUnauthorized: false } };]]></ac:plain-text-body
+  ></ac:structured-macro
+>
+<h3>Email data object</h3>
+<p>
+  Documentation officielle :&nbsp;<a href="https://nodemailer.com/message/"
+    >https://nodemailer.com/message/</a
+  >
+</p>
+<ac:structured-macro
+  ac:name="code"
+  ac:schema-version="1"
+  ac:macro-id="f7aeec34-922d-4be2-beaa-48002e7a94c7"
+  ><ac:plain-text-body
+    ><![CDATA[// NOTE : bcc field is not detected by the mailparser and/or the
+    smtp-server const data = { from: "test@from.local", to: ["test1@to.local",
+    "test2@to.local"], cc: ["test3@cc.local", "test5@cc.local",
+    "test6@cc.local"], bcc: ["test4@bcc.local"], subject: "Testing the webux
+    mailer", html: " <p>Hello World !</p>", text: "Hello World !"
+    };]]></ac:plain-text-body
+  ></ac:structured-macro
+>
+<h2>D&eacute;marrage rapide</h2>
+<h3>Exemple</h3>
+<blockquote>
+  <p>
+    Pour test seulement, L&rsquo;exemple complet se trouve dans le
+    r&eacute;pertoire examples/
+  </p>
+</blockquote>
+<p>example.js</p>
+<ac:structured-macro
+  ac:name="code"
+  ac:schema-version="1"
+  ac:macro-id="f6abcc72-ed58-4736-921d-693951004167"
+  ><ac:plain-text-body
+    ><![CDATA[const WebuxMailer = require("@studiowebux/mailer"); const opts = {
+    isEnabled: true, host: process.env.HOST || "127.0.0.1", port: 2525, secure:
+    false, auth: { user: process.env.USER || "", pass: process.env.PASSWORD ||
+    "" } }; const webuxMailer = new WebuxMailer(opts, console); const data = {
+    from: "test@from.local", to: ["test1@to.local", "test2@to.local"], subject:
+    "Testing the webux mailer", html: " <p>Hello World !</p>", text: "Hello
+    World !" }; webuxMailer.Sendmail(data).then(info => { console.log(info);
+    });]]></ac:plain-text-body
+  ></ac:structured-macro
+>
+<h3>D&eacute;marrer le faux serveur SMTP avec un Web UI (VueJS + Socket.IO)</h3>
+<p>
+  Ces lignes de commandes, vont d&eacute;marrer le serveur SMTP, puis le
+  frontend et par la suite, vous pouvez lancer les deux derni&egrave;res
+  commandes pour envoyer un email.
+</p>
+<ac:structured-macro
+  ac:name="code"
+  ac:schema-version="1"
+  ac:macro-id="0129de6d-b1a3-4def-8621-b23e93c4380f"
+  ><ac:parameter ac:name="language">bash</ac:parameter
+  ><ac:plain-text-body
+    ><![CDATA[# Start the smtp-server and socket.IO cd fake-smtp-server/ npm
+    install npm start & # Start the frontend cd ./frontend npm install npm run
+    serve & # Before executing these 2 lines, Access the frontend # Send an
+    email (It can be executed multiple times) cd ../../examples/ node
+    index.js]]></ac:plain-text-body
+  ></ac:structured-macro
+>
+<p>Pour lancer les scripts d'exemple,</p>
+<ac:structured-macro
+  ac:name="code"
+  ac:schema-version="1"
+  ac:macro-id="221e5a56-9362-49a3-964f-b814ada06330"
+  ><ac:parameter ac:name="language">bash</ac:parameter
+  ><ac:plain-text-body
+    ><![CDATA[node bad.js echo "---" node disabled.js echo "---" node failure.js
+    echo "---" node incomplete.js echo "---" node noOpts.js echo "---" node
+    simple.js echo "---" node index.js echo "+++"]]></ac:plain-text-body
+  ></ac:structured-macro
+>
+<h1>Feature request</h1>
+<ul>
+  <li>
+    <p>attachments</p>
+  </li>
+</ul>
+<h1>Derni&egrave;re Version</h1>
+<ul>
+  <li>
+    <p>
+      V1.2.1 (<a
+        href="https://github.com/studiowebux/webux-mailer/releases/tag/V1.2.0"
+        >https://github.com/studiowebux/webux-mailer/releases/tag/V1.2.</a
+      >1)
+    </p>
+  </li>
+</ul>
+<h1>Vid&eacute;os</h1>
+<ac:image
+  ac:align="center"
+  ac:layout="center"
+  ac:original-height="1002"
+  ac:original-width="1919"
+  ><ri:attachment ri:filename="webux-mailer Demo.mov" ri:version-at-save="1"
+/></ac:image>
+<p />

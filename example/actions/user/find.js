@@ -26,7 +26,7 @@ const route = async (req, res, next) => {
 
 // socket with auth
 
-const socket = (client, io) => {
+const socket = (socket, io) => {
   return async () => {
     console.log("findUser called !");
     try {
@@ -40,10 +40,11 @@ const socket = (client, io) => {
       }
 
       console.log("User Found !");
-      io.emit("userFound", obj);
+      socket.emit("userFound", obj); // to only the client
+      //io.emit("userFound", obj); // to everyone
     } catch (e) {
       console.error(e);
-      client.emit("gotError", e.message);
+      socket.emit("gotError", e.message);
     }
   };
 };

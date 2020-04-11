@@ -16,7 +16,30 @@ npm run serve
 
 Launch the backend
 
+Default version
+
 ```bash
 npm install
 node index.js
+```
+
+Standalone Version
+
+```bash
+npm install
+node index.js
+```
+
+With namespaces
+
+```bash
+npm install
+node index_namespaces.js
+```
+
+Other variant of default
+
+```bash
+npm install
+node index_default.js
 ```

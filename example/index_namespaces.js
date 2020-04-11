@@ -13,9 +13,9 @@ app.use(cors());
 
 const opts = {
   authentication: {
-    namespaces: ["profile", "default"],
+    namespaces: [],
     accessTokenKey: "accessToken", // The cookie key name
-    isAuthenticated: require(path.join(__dirname, ".", "isAuth.js")), // the function to check if the user if authenticated
+    isAuthenticated: path.join(__dirname, ".", "isAuth.js"), // the function to check if the user if authenticated using a path
   },
   redis: {
     host: process.env.REDIS_HOST || "127.0.0.1",
@@ -27,10 +27,9 @@ const opts = {
     default: [
       path.join(__dirname, "actions", "user"),
       path.join(__dirname, "actions", "message"),
-      path.join(__dirname, "actions", "_ReservedEvents"),
+      path.join(__dirname, "actions", "profile"),
     ],
     profile: [
-      path.join(__dirname, "actions", "profile"),
       path.join(__dirname, "actions", "profile", "private", "superPrivate"), // With the recursionAllowed set to 'false' you can specify specific path within a path
       path.join(__dirname, "actions", "profile", "private"), // With the recursionAllowed set to 'false' you can specify specific path within a path
     ],
