@@ -8,7 +8,7 @@
 "use strict";
 
 /**
- * this function take a text and return the first letter in upper case.
+ * this function takes a text and return the first letter in upper case.
  * @param {String} text mandatory
  * @return {String} return the string with the first letter modified to be Uppercased
  */

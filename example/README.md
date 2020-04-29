@@ -1,12 +1,12 @@
 ## Webux-socket Example
 
-Launch redis container
+### Launch redis container
 
 ```bash
 docker run -d --name redis -p 6379:6379 redis
 ```
 
-Launch the frontend
+### Launch the frontend
 
 ```bash
 cd frontend/
@@ -14,7 +14,7 @@ npm install
 npm run serve
 ```
 
-Launch the backend
+### Launch the backend
 
 Default version
 
@@ -27,7 +27,7 @@ Standalone Version
 
 ```bash
 npm install
-node index.js
+node standalone.js
 ```
 
 With namespaces

@@ -13,7 +13,7 @@ const redisAdapter = require("socket.io-redis");
  * Configure the redis adapter
  * @return {VoidFunction}
  */
-function attachAdapter() {
+function AttachAdapter() {
   if (!this.config || !this.config.redis) {
     this.log.debug("webux-Socket - Unable to configure Redis.");
     throw new Error("No Options provided to configure redis");
@@ -30,4 +30,4 @@ function attachAdapter() {
   );
 }
 
-module.exports = attachAdapter;
+module.exports = AttachAdapter;

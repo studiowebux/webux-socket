@@ -9,6 +9,13 @@
 
 const cookie = require("cookie");
 
+/**
+ * To configure the authentication
+ * @param {Function} checkAuth The function to check if the user is authenticated
+ * @param {Object} config The configuration
+ * @param {Object} log The custom logger if any, by default `console`
+ * @return {Function<socket, next>} Returns a function(socket, next)
+ */
 function useAuthentication(checkAuth, config, log) {
   return async (socket, next) => {
     log.debug(`webux-Socket - [io.use] Getting the cookie for ${socket.id}`);
@@ -54,9 +61,11 @@ function useAuthentication(checkAuth, config, log) {
 
 /**
  * add io.use to handle the authentication using a function provided by the user within the configuration
- * @return {Function<Error,Object>} (err, user)
+ * The authentication method provided can be a actual function or a valid path to the function.
+ * The authentication can also be configured per namespaces.
+ * @return {VoidFunction}
  */
-function authenticate() {
+function Authenticate() {
   let checkAuth = null;
 
   if (
@@ -95,4 +104,4 @@ function authenticate() {
   });
 }
 
-module.exports = authenticate;
+module.exports = Authenticate;

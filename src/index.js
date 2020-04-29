@@ -1,3 +1,10 @@
+/**
+ * File: index.js
+ * Author: Tommy Gingras
+ * Date: 2019-05-25
+ * License: All rights reserved Studio Webux S.E.N.C 2015-Present
+ */
+
 const socketio = require("socket.io");
 
 const ConfigureRedis = require("./helpers/redis/index");
@@ -5,10 +12,12 @@ const ConfigureAuthentication = require("./helpers/authentication/index");
 const LoadActions = require("./helpers/actions/index");
 
 /**
- * @class socket
+ * @class Socket
  * It exposes Socket.IO with some helpers
+ * - Redis
+ * - Authentication
  */
-class socket {
+class Socket {
   /**
    * It initializes the Socket.IO instance
    * @param {Object} opts The configuration
@@ -41,4 +50,4 @@ socket.prototype.AddRedis = ConfigureRedis;
 socket.prototype.AddAuthentication = ConfigureAuthentication;
 socket.prototype.LoadActions = LoadActions;
 
-module.exports = socket;
+module.exports = Socket;

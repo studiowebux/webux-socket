@@ -10,6 +10,9 @@
 const fs = require("fs");
 const path = require("path");
 const { FirstLetterCaps } = require("../lib/helpers");
+
+// List of words prohibited,
+// this is according of the socket.io documentation
 const reserved = [
   "error",
   "connect",
@@ -29,6 +32,7 @@ const reserved = [
  * @param {String} name The event name
  * @param {Function} fn The socket function to call
  * @param {Object} log The custom logger
+ * @return {Object} Returns the socket.on(name, fn)
  */
 function SocketOn(socket, name, fn, log) {
   if (
@@ -54,6 +58,7 @@ function SocketOn(socket, name, fn, log) {
  * @param {Object} log Custom logger function
  * @param {Boolean} recursionAllowed It allows to check directories within the parent directory
  * @param {String} parent The last known parent, use along with the recursion
+ * @return {VoidFunction} It attaches the socket to the socket object pass in parameter
  */
 function AttachAction(
   _path,
@@ -125,7 +130,7 @@ function AttachAction(
 
       log.debug(`webux-socket - 'AttachAction' - Method name "${name}"`);
 
-      SocketOn(
+      return SocketOn(
         socket,
         name,
         require(path.join(_path, _method)).socket(socket, io),
@@ -157,7 +162,12 @@ function AttachAction(
     log.debug(
       `webux-socket - 'AttachAction' - Attaching the method "${_method}" with name "${name}" to the socket`
     );
-    SocketOn(socket, name, require(path.join(_path)).socket(socket, io), log);
+    return SocketOn(
+      socket,
+      name,
+      require(path.join(_path)).socket(socket, io),
+      log
+    );
   } else {
     log.error(`webux-socket - 'AttachAction' - Invalid Path ${_path}`);
     return;
@@ -165,13 +175,13 @@ function AttachAction(
 }
 
 /**
- * Iterating in each folder and attach actions if they export the socket function
- *
+ * Iterating in each folder and attach actions if they export the socket function.
  * @param {Object} log The custom logger function
- * @return {VoidFunction} (socket, io, path)
+ * @param {Object} config The configuration for the socket
  * @param {Object} socket The socket for a specific namespace
  * @param {Object} io The Socket.IO instance
  * @param {Object} paths The list of paths to iterate and attach socket if they are defined
+ * @return {Function<socket, io, paths>} Returns a function(socket, io, paths)
  */
 function AttachActions(log, config) {
   return (socket, io, paths) => {
@@ -179,7 +189,7 @@ function AttachActions(log, config) {
       `webux-socket - 'AttachAction' - List of paths to be iterated "${paths}"`
     );
     paths.forEach((_path) => {
-      AttachAction(
+      return AttachAction(
         _path,
         socket,
         io,
