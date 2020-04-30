@@ -46,8 +46,8 @@ class Socket {
   }
 }
 
-socket.prototype.AddRedis = ConfigureRedis;
-socket.prototype.AddAuthentication = ConfigureAuthentication;
-socket.prototype.LoadActions = LoadActions;
+Socket.prototype.AddRedis = ConfigureRedis;
+Socket.prototype.AddAuthentication = ConfigureAuthentication;
+Socket.prototype.LoadActions = LoadActions;
 
 module.exports = Socket;
