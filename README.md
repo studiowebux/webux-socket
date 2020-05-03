@@ -14,11 +14,15 @@ It offers 4 possibilities
 
 The **examples/** directory has a frontend (made with VueJS) and some backend to do tests and to understand the module and its possibilities.
 
+For more details (EN/FR) : <a href="https://github.com/studiowebux/webux-socket/wiki" target="_blank">Wiki</a>
+
 ## Installation
 
 ```bash
 npm install --save @studiowebux/socket
 ```
+
+[NPM](https://www.npmjs.com/package/@studiowebux/socket)
 
 ## Usage
 
