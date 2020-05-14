@@ -21,27 +21,54 @@ class Socket {
   /**
    * It initializes the Socket.IO instance
    * @param {Object} opts The configuration
-   * @param {Object} app The HTTP or Express Instance
+   * @param {Object} server The HTTP server
    * @param {Object} log The custom logger function, by default: console
    */
-  constructor(opts, app, log = console) {
+  constructor(opts, server, log = console) {
     this.config = opts;
     this.log = log;
-    this.io = socketio(app); // Socket io instance with Express or HTTP
+    if (server) {
+      this.io = socketio(server); // Socket io instance with Express or HTTP
+    } else {
+      log.debug(
+        "The io instance is not configured, to initialize it later, use Initialize(server)"
+      );
+      this.io = null;
+    }
+  }
+
+  /**
+   * To initialize the socket.io instance later in the process
+   * @param {Object} server The HTTP server
+   * @returns {Object} The io instance
+   */
+  Initialize(server) {
+    if (server) {
+      this.io = socketio(server);
+      return this.io;
+    } else {
+      throw new Error("A server instance is required");
+    }
   }
 
   /**
    * To start the instance using the automatic actions
    */
   Start() {
+    if (!this.io) {
+      throw new Error("Socket.IO not initialized");
+    }
     this.LoadActions();
   }
 
   /**
    * To start the instance freely
-   * @return {Object} the io
+   * @return {Object} the io instance
    */
   Standalone() {
+    if (!this.io) {
+      throw new Error("Socket.IO not initialized");
+    }
     return this.io;
   }
 }

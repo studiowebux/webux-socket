@@ -37,17 +37,28 @@ const reserved = [
 function SocketOn(socket, name, fn, log) {
   if (
     name.includes("_ReservedEvents") &&
+    reserved.includes(name.split("_")[0]) &&
+    name.split("_")[0] === "connect"
+  ) {
+    log.debug(
+      `webux-socket - 'SocketOn' - Adding 'onConnect' function "${
+        name.split("_")[0]
+      }" to the socket`
+    );
+  } else if (
+    name.includes("_ReservedEvents") &&
     reserved.includes(name.split("_")[0])
   ) {
     log.debug(
-      `webux-socket - 'SocketOn' - Attaching "${
+      `webux-socket - 'SocketOn' - Attaching 'reserved event' "${
         name.split("_")[0]
       }" to the socket`
     );
     return socket.on(name.split("_")[0], fn);
+  } else {
+    log.debug(`webux-socket - 'SocketOn' - Attaching "${name}" to the socket`);
+    return socket.on(name, fn);
   }
-  log.debug(`webux-socket - 'SocketOn' - Attaching "${name}" to the socket`);
-  return socket.on(name, fn);
 }
 
 /**
@@ -125,7 +136,6 @@ function AttachAction(
       log.debug(
         `webux-socket - 'AttachAction' - Attaching the method "${_method}"`
       );
-      console.log("***** " + _path);
       const name = _method.split(".js")[0] + parentFolder;
 
       log.debug(`webux-socket - 'AttachAction' - Method name "${name}"`);

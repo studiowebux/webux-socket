@@ -152,10 +152,23 @@ This function allows to
 2. Automatically configure the actions and namespaces based on the configuration file/variable
 
 ```bash
-webuxSocker.Start();
+webuxSocket.Start();
 ```
 
 > If the automatic configuration doesn't meet your requirements, you can use the `Standalone()` function to access the native socket.IO implementation.
+
+#### Initialize(server): Object
+
+This function initializes the socket.io instance using a server and it returns a io instance.
+
+```javascript
+const app = require("express")();
+const server = require("http").Server(app);
+// OR
+const app = require("http").createServer(handler); // handler not defined here ...
+
+const io = webuxSocket.Initialize(server);
+```
 
 #### Standalone(): Object
 
@@ -205,13 +218,13 @@ Here is the list of reserved keywords:
 
 ```javascript
 "error",
-  "connect",
-  "disconnect",
-  "disconnecting",
-  "newListener",
-  "removeListener",
-  "ping",
-  "pong";
+"connect",
+"disconnect",
+"disconnecting",
+"newListener",
+"removeListener",
+"ping",
+"pong";
 ```
 
 #### Events usage
@@ -254,6 +267,32 @@ You can use the same pattern to create custom events per namespaces, or simply r
 and/or
 
 > Use the same directory to all namespaces
+
+#### Examples
+
+**\_ReservedEvents/disconnect.js**
+
+```javascript
+const socket = (client, io) => {
+  return () => {
+    console.debug(`Socket ${client.id} disconnected.`);
+  };
+};
+
+module.exports = { socket };
+```
+
+**\_ReservedEvents/connect.js**
+
+> This function doesn't need the `return (){ ... }` like the disconnect event
+
+```javascript
+const socket = (client, io) => {
+  console.debug(`Socket ${client.id} connected.`);
+};
+
+module.exports = { socket };
+```
 
 ### The function to check the authentication
 
