@@ -17,11 +17,11 @@
   "author": "Studio Webux S.E.N.C",
   "license": "SEE LICENSE IN license.txt",
   "dependencies": {
-    "cookie": "^0.4.0",
+    "cookie": "^0.4.1",
     "fs": "0.0.1-security",
     "path": "^0.12.7",
     "socket.io": "^2.2.0",
-    "socket.io-redis": "^5.2.0"
+    "socket.io-redis": "^5.3.0"
   },
   "devDependencies": {
     "cluster": "^0.7.7",
