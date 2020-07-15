@@ -5,9 +5,7 @@
  * License: All rights reserved Studio Webux S.E.N.C 2015-Present
  */
 
-"use strict";
-
-const redisAdapter = require("socket.io-redis");
+const redisAdapter = require('socket.io-redis');
 
 /**
  * Configure the redis adapter
@@ -15,18 +13,18 @@ const redisAdapter = require("socket.io-redis");
  */
 function AttachAdapter() {
   if (!this.config || !this.config.redis) {
-    this.log.debug("webux-Socket - Unable to configure Redis.");
-    throw new Error("No Options provided to configure redis");
+    this.log.debug('webux-Socket - Unable to configure Redis.');
+    throw new Error('No Options provided to configure redis');
   }
 
-  this.log.info("webux-socket - Configuring Redis Adapter.");
+  this.log.info('webux-socket - Configuring Redis Adapter.');
 
   this.io.adapter(
     redisAdapter({
       host: this.config.redis.host,
       port: this.config.redis.port,
       auth_pass: this.config.redis.password,
-    })
+    }),
   );
 }
 

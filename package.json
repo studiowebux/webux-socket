@@ -12,7 +12,9 @@
     "url": "https://github.com/studiowebux/webux-socket.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "lint": "eslint src/**",
+    "doc": "jsdoc src -d jsdoc/ "
   },
   "author": "Studio Webux S.E.N.C",
   "license": "SEE LICENSE IN license.txt",
@@ -24,10 +26,19 @@
     "socket.io-redis": "^5.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "babel-jest": "^26.1.0",
     "cluster": "^0.7.7",
     "cors": "^2.8.5",
+    "eslint": "^7.4.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jest": "^23.18.0",
     "express": "^4.17.1",
     "http": "0.0.0",
+    "jest": "^26.1.0",
+    "jsdoc": "^3.6.4",
     "jsonwebtoken": "^8.5.1",
     "redis-mock": "^0.46.0"
   }

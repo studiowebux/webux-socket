@@ -5,8 +5,6 @@
  * License: All rights reserved Studio Webux S.E.N.C 2015-Present
  */
 
-"use strict";
-
 /**
  * this function takes a text and return the first letter in upper case.
  * @param {String} text mandatory

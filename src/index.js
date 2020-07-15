@@ -5,11 +5,11 @@
  * License: All rights reserved Studio Webux S.E.N.C 2015-Present
  */
 
-const socketio = require("socket.io");
+const socketio = require('socket.io');
 
-const ConfigureRedis = require("./helpers/redis/index");
-const ConfigureAuthentication = require("./helpers/authentication/index");
-const LoadActions = require("./helpers/actions/index");
+const ConfigureRedis = require('./helpers/redis/index');
+const ConfigureAuthentication = require('./helpers/authentication/index').default;
+const LoadActions = require('./helpers/actions/index');
 
 /**
  * @class Socket
@@ -31,7 +31,7 @@ class Socket {
       this.io = socketio(server); // Socket io instance with Express or HTTP
     } else {
       log.debug(
-        "The io instance is not configured, to initialize it later, use Initialize(server)"
+        'The io instance is not configured, to initialize it later, use Initialize(server)',
       );
       this.io = null;
     }
@@ -39,16 +39,15 @@ class Socket {
 
   /**
    * To initialize the socket.io instance later in the process
-   * @param {Object} server The HTTP server
+   * @param {Object} server The HTTP server (Mandatory)
    * @returns {Object} The io instance
    */
   Initialize(server) {
     if (server) {
       this.io = socketio(server);
       return this.io;
-    } else {
-      throw new Error("A server instance is required");
     }
+    throw new Error('A server instance is required');
   }
 
   /**
@@ -56,7 +55,7 @@ class Socket {
    */
   Start() {
     if (!this.io) {
-      throw new Error("Socket.IO not initialized");
+      throw new Error('Socket.IO not initialized');
     }
     this.LoadActions();
   }
@@ -67,7 +66,7 @@ class Socket {
    */
   Standalone() {
     if (!this.io) {
-      throw new Error("Socket.IO not initialized");
+      throw new Error('Socket.IO not initialized');
     }
     return this.io;
   }

@@ -1,3 +1,5 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 /**
  * File: index.js
  * Author: Tommy Gingras
@@ -5,9 +7,7 @@
  * License: All rights reserved Studio Webux S.E.N.C 2015-Present
  */
 
-"use strict";
-
-const cookie = require("cookie");
+const cookie = require('cookie');
 
 /**
  * To configure the authentication
@@ -25,34 +25,35 @@ function useAuthentication(checkAuth, config, log) {
       log.debug(
         `webux-Socket - [io.use] Bad Cookie ${JSON.stringify(cookie)} for ${
           socket.id
-        }`
+        }`,
       );
-      return next(new Error("Access Token Not Present or Malformed"));
+      return next(new Error('Access Token Not Present or Malformed'));
     }
 
     const accessToken = cookies[config.authentication.accessTokenKey];
 
     log.debug(`The access token : ${accessToken}`);
     log.debug(
-      `webux-Socket - [io.use] Cookie is present, starting the authentication for ${socket.id}...`
+      `webux-Socket - [io.use] Cookie is present, starting the authentication for ${socket.id}...`,
     );
 
     // the socket instance and the access token value
     const user = await checkAuth(accessToken).catch((e) => {
       log.debug(
-        `webux-socket - The authentication has failed for ${socket.id}.`
+        `webux-socket - The authentication has failed for ${socket.id}.`,
       );
       log.debug(e);
-      return next(new Error("The authentication has failed"));
+      return next(new Error('The authentication has failed'));
     });
 
     if (!user) {
       log.debug(`webux-socket - The user ${socket.id} is not connected.`);
-      return next(new Error("The authentication has failed"));
+      return next(new Error('The authentication has failed'));
     }
 
     log.debug(`webux-Socket - The user ${socket.id} is authenticated.`);
 
+    // eslint-disable-next-line no-param-reassign
     socket.user = user;
 
     return next();
@@ -60,7 +61,7 @@ function useAuthentication(checkAuth, config, log) {
 }
 
 /**
- * add io.use to handle the authentication using a function provided by the user within the configuration
+ * Add io.use to handle the authentication using a function provided in the configuration
  * The authentication method provided can be a actual function or a valid path to the function.
  * The authentication can also be configured per namespaces.
  * @return {VoidFunction}
@@ -69,32 +70,32 @@ function Authenticate() {
   let checkAuth = null;
 
   if (
-    !this.config ||
-    !this.config.authentication ||
-    !this.config.authentication.namespaces
+    !this.config
+    || !this.config.authentication
+    || !this.config.authentication.namespaces
   ) {
-    this.log.debug("webux-Socket - Unable to configure the authentication.");
-    throw new Error("No Options provided to configure the authentication");
+    this.log.debug('webux-Socket - Unable to configure the authentication.');
+    throw new Error('No Options provided to configure the authentication');
   }
 
   if (!this.config.authentication.isAuthenticated) {
-    throw new Error("The authentication method is not defined");
-  } else if (typeof this.config.authentication.isAuthenticated === "function") {
+    throw new Error('The authentication method is not defined');
+  } else if (typeof this.config.authentication.isAuthenticated === 'function') {
     checkAuth = this.config.authentication.isAuthenticated;
   } else if (
-    typeof this.config.authentication.isAuthenticated === "string" &&
-    typeof require(this.config.authentication.isAuthenticated) === "function"
+    typeof this.config.authentication.isAuthenticated === 'string'
+    && typeof require(this.config.authentication.isAuthenticated) === 'function'
   ) {
     checkAuth = require(this.config.authentication.isAuthenticated);
   } else {
-    throw new Error("The authentication method must be a function or a path");
+    throw new Error('The authentication method must be a function or a path');
   }
 
-  this.log.debug("webux-Socket - Creating the authentication handler");
+  this.log.debug('webux-Socket - Creating the authentication handler');
 
   this.config.authentication.namespaces.forEach((nsp) => {
     this.log.debug(`webux-Socket - Using authentication on namespace '${nsp}'`);
-    if (nsp === "default") {
+    if (nsp === 'default') {
       this.io.use(useAuthentication(checkAuth, this.config, this.log));
     } else {
       this.io
