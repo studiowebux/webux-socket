@@ -36,7 +36,7 @@ pipeline {
 
     stage('Staging') {
       steps {
-        sh 'git remote add prod https://github.com/studiowebux/webux-socket.git'
+        sh 'git remote add prod https://github.com/studiowebux/webux-socket.git || true'
         sh "npm version ${env.RELEASE_SCOPE}"
         sh 'npm publish --registry=https://npm.webux.lab --access public'
         input 'Deploy to production ?'
