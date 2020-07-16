@@ -24,8 +24,19 @@ pipeline {
       }
     }
 
+    stage('Versionning') {
+      steps {
+        script {
+          env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+                            parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
+        }
+        echo '${env.RELEASE_SCOPE}'
+      }
+    }
+
     stage('Staging') {
       steps {
+        sh 'npm version ${env.RELEASE_SCOPE}'
         sh 'npm publish --registry=https://npm.webux.lab'
         input 'Deploy to production ?'
       }
@@ -38,5 +49,13 @@ pipeline {
       }
     }
 
+  }
+  post {
+    failure {
+        mail to: 'tommy@studiowebux.com',
+        subject: "Failed Pipeline ${currentBuild.fullDisplayName}",
+        body: " For details about the failure, see ${env.BUILD_URL}"
+      }
+    }
   }
 }
