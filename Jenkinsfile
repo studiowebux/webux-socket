@@ -36,15 +36,18 @@ pipeline {
 
     stage('Staging') {
       steps {
+        sh 'git remote add prod https://github.com/studiowebux/webux-socket.git'
         sh "npm version ${env.RELEASE_SCOPE}"
-        sh 'npm publish --registry=https://npm.webux.lab'
+        sh 'npm publish --registry=https://npm.webux.lab --access public'
         input 'Deploy to production ?'
       }
     }
 
     stage('Production') {
       steps {
-        sh 'npm publish'
+        sh 'git push prod master'
+        sh 'git push origin master'
+        sh 'npm publish --registry=https://registry.npmjs.org/ --access public'
         mail(subject: 'Webux-socket - Published', body: 'Webux-socket has been published to production')
       }
     }
