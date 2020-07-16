@@ -1,6 +1,5 @@
 const path = require('path');
 const express = require('express');
-
 const server = require('http');
 
 const WebuxSocket = require('../src');

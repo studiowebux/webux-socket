@@ -7,9 +7,9 @@
 
 const socketio = require('socket.io');
 
-const ConfigureRedis = require('./helpers/redis/index');
-const ConfigureAuthentication = require('./helpers/authentication/index').default;
-const LoadActions = require('./helpers/actions/index');
+const ConfigureRedis = require('./helpers/redis');
+const ConfigureAuthentication = require('./helpers/authentication');
+const LoadActions = require('./helpers/actions');
 
 /**
  * @class Socket
