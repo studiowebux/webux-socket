@@ -50,7 +50,7 @@ pipeline {
 
         
       steps {
-        withCredentials([usernamePassword(credentialsId: '1f00e77842774986a932a1367b515be6efb49cae2d1a134a1988a651d8ff094b', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){ 
+        withCredentials([usernamePassword(credentialsId: 'git:1f00e77842774986a932a1367b515be6efb49cae2d1a134a1988a651d8ff094b', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){ 
           sh('''
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
               git push origin master
@@ -72,7 +72,7 @@ pipeline {
       
 
       steps {
-        withCredentials([usernamePassword(credentialsId: '1f00e77842774986a932a1367b515be6efb49cae2d1a134a1988a651d8ff094b', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){ 
+        withCredentials([usernamePassword(credentialsId: 'git:1f00e77842774986a932a1367b515be6efb49cae2d1a134a1988a651d8ff094b', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){ 
           sh('''
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
               git push origin master
