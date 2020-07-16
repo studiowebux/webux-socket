@@ -47,16 +47,21 @@ pipeline {
     }
 
     stage('Staging') {
-      environment { 
-        GIT_AUTH = credentials('1f00e77842774986a932a1367b515be6efb49cae2d1a134a1988a651d8ff094b')
-        GIT_AUTH_PROD = credentials('GitHub')
-      }
+
         
       steps {
-        sh "git config --local credential.helper '!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f'"
-        sh 'git push origin master'
-        sh "git config --local credential.helper '!f() { echo username=$GIT_AUTH_PROD_USR; echo password=$GIT_AUTH_PROD_PSW; }; f'"
-        sh 'git push prod master'
+        withCredentials([usernamePassword(credentialsId: '1f00e77842774986a932a1367b515be6efb49cae2d1a134a1988a651d8ff094b', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){ 
+          sh('''
+              git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
+              git push origin master
+          ''')
+        }
+        withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){ 
+          sh('''
+              git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
+              git push prod master
+          ''')
+        }
         sh "npm version ${env.RELEASE_SCOPE}"
         sh 'npm publish --registry=https://npm.webux.lab'
         input 'Deploy to  production ?'
@@ -64,16 +69,22 @@ pipeline {
     }
 
     stage('Production') {
-      environment { 
-        GIT_AUTH = credentials('1f00e77842774986a932a1367b515be6efb49cae2d1a134a1988a651d8ff094b') 
-        GIT_AUTH_PROD = credentials('GitHub')
-      }
+      
 
       steps {
-        sh "git config --local credential.helper '!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f'"
-        sh 'git push origin master'
-        sh "git config --local credential.helper '!f() { echo username=$GIT_AUTH_PROD_USR; echo password=$GIT_AUTH_PROD_PSW; }; f'"
-        sh 'git push prod master'
+        withCredentials([usernamePassword(credentialsId: '1f00e77842774986a932a1367b515be6efb49cae2d1a134a1988a651d8ff094b', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){ 
+          sh('''
+              git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
+              git push origin master
+          ''')
+        }
+        withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){ 
+          sh('''
+              git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
+              git push prod master
+          ''')
+        }
+        
         sh 'npm publish --access public'
         mail(subject: 'Webux-socket - Published', body: 'Webux-socket has been published to production')
       }
