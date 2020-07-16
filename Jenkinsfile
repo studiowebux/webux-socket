@@ -18,12 +18,6 @@ pipeline {
       }
     }
 
-    stage('Documentation') {
-      steps {
-        sh 'npm run-script doc'
-      }
-    }
-
     stage('Lint') {
       steps {
         sh 'npm run-script lint'
