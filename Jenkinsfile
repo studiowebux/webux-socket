@@ -5,6 +5,7 @@ pipeline {
     }
 
   }
+
   stages {
     stage('Preparation') {
       steps {
@@ -21,6 +22,12 @@ pipeline {
     stage('Lint') {
       steps {
         sh 'npm run-script lint'
+      }
+    }
+
+    stage('Code Analysis') {
+      steps {
+        sh 'echo "Code Analysis"'
       }
     }
 
