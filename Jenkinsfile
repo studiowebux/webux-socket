@@ -48,12 +48,14 @@ pipeline {
           sh('''
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
               git push origin master
+              git config --unset credential.helper
           ''')
         }
         withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){ 
           sh('''
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
               git push prod master
+              git config --unset credential.helper
           ''')
         }
         sh "npm version ${env.RELEASE_SCOPE}"
@@ -70,17 +72,19 @@ pipeline {
           sh('''
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
               git push origin master
+              git config --unset credential.helper
           ''')
         }
         withCredentials([usernamePassword(credentialsId: 'GitHub', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]){ 
           sh('''
               git config --local credential.helper "!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f"
               git push prod master
+              git config --unset credential.helper
           ''')
         }
         
         sh 'npm publish --access public'
-        mail(subject: 'Webux-socket - Published', body: 'Webux-socket has been published to production')
+        mail(to: 'tommy@studiowebux.com', subject: 'Webux-socket - Published', body: 'Webux-socket has been published to production')
       }
     }
 
@@ -90,6 +94,9 @@ pipeline {
         mail to: 'tommy@studiowebux.com',
         subject: "Failed Pipeline ${currentBuild.fullDisplayName}",
         body: " For details about the failure, see ${env.BUILD_URL}"
+
+
+        sh 'git config --unset credential.helper'
     }
   }
 }
