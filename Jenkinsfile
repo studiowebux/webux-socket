@@ -30,13 +30,13 @@ pipeline {
           env.RELEASE_SCOPE = input message: 'User input required', ok: 'Continue',
                             parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
         }
-        echo '${env.RELEASE_SCOPE}'
+        echo "${env.RELEASE_SCOPE}"
       }
     }
 
     stage('Staging') {
       steps {
-        sh 'npm version ${env.RELEASE_SCOPE}'
+        sh "npm version ${env.RELEASE_SCOPE}"
         sh 'npm publish --registry=https://npm.webux.lab'
         input 'Deploy to production ?'
       }
