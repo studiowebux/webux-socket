@@ -53,9 +53,9 @@ pipeline {
       }
         
       steps {
-        sh 'git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"'
+        sh "git config --local credential.helper '!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f'"
         sh 'git push origin master'
-        sh 'git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_PROD_USR; echo password=\\$GIT_AUTH_PROD_PSW; }; f"'
+        sh "git config --local credential.helper '!f() { echo username=$GIT_AUTH_PROD_USR; echo password=$GIT_AUTH_PROD_PSW; }; f'"
         sh 'git push prod master'
         sh "npm version ${env.RELEASE_SCOPE}"
         sh 'npm publish --registry=https://npm.webux.lab'
@@ -70,10 +70,9 @@ pipeline {
       }
 
       steps {
-        sh 'git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_USR; echo password=\\$GIT_AUTH_PSW; }; f"'
-        
+        sh "git config --local credential.helper '!f() { echo username=$GIT_AUTH_USR; echo password=$GIT_AUTH_PSW; }; f'"
         sh 'git push origin master'
-        sh 'git config --local credential.helper "!f() { echo username=\\$GIT_AUTH_PROD_USR; echo password=\\$GIT_AUTH_PROD_PSW; }; f"'
+        sh "git config --local credential.helper '!f() { echo username=$GIT_AUTH_PROD_USR; echo password=$GIT_AUTH_PROD_PSW; }; f'"
         sh 'git push prod master'
         sh 'npm publish --access public'
         mail(subject: 'Webux-socket - Published', body: 'Webux-socket has been published to production')
