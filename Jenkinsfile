@@ -6,9 +6,21 @@ pipeline {
 
   }
   stages {
+    stage('Preparation') {
+      steps {
+        sh 'git remote add prod https://github.com/studiowebux/webux-socket.git || true'
+      }
+    }
+
     stage('Dependencies') {
       steps {
         sh 'npm install'
+      }
+    }
+
+    stage('Documentation') {
+      steps {
+        sh 'npm run-script doc'
       }
     }
 
@@ -36,9 +48,10 @@ pipeline {
 
     stage('Staging') {
       steps {
-        sh 'git remote add prod https://github.com/studiowebux/webux-socket.git || true'
+        sh 'git push prod master'
+        sh 'git push origin master'
         sh "npm version ${env.RELEASE_SCOPE}"
-        sh 'npm publish --registry=https://npm.webux.lab --access public'
+        sh 'npm publish --registry=https://npm.webux.lab'
         input 'Deploy to production ?'
       }
     }
@@ -47,7 +60,7 @@ pipeline {
       steps {
         sh 'git push prod master'
         sh 'git push origin master'
-        sh 'npm publish --registry=https://registry.npmjs.org/ --access public'
+        sh 'npm publish --access public'
         mail(subject: 'Webux-socket - Published', body: 'Webux-socket has been published to production')
       }
     }
