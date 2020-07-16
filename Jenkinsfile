@@ -27,7 +27,7 @@ pipeline {
     stage('Versionning') {
       steps {
         script {
-          env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+          env.RELEASE_SCOPE = input message: 'User input required', ok: 'Continue',
                             parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
         }
         echo '${env.RELEASE_SCOPE}'
