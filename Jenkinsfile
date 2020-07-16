@@ -55,7 +55,6 @@ pipeline {
         mail to: 'tommy@studiowebux.com',
         subject: "Failed Pipeline ${currentBuild.fullDisplayName}",
         body: " For details about the failure, see ${env.BUILD_URL}"
-      }
     }
   }
 }
