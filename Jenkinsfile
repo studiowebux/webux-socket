@@ -27,7 +27,16 @@ pipeline {
 
     stage('Code Analysis') {
       steps {
-        sh 'echo "Code Analysis"'
+        script {
+          def scannerHome = tool 'sonarqube';
+              withSonarQubeEnv("sonarqube-container") {
+              sh "${tool("sonarqube")}/bin/sonar-scanner \
+              -Dsonar.projectKey=webux-socket \
+              -Dsonar.sources=src/ \
+              -Dsonar.host.url=https://sonarqube.webux.lab \
+              -Dsonar.login=jenkins"
+              }
+        }
       }
     }
 
