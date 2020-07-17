@@ -30,11 +30,7 @@ pipeline {
         script {
           def scannerHome = tool 'sonarqube';
               withSonarQubeEnv("sonarqube") {
-              sh "${tool("sonarqube")}/bin/sonar-scanner \
-              -Dsonar.projectKey=webux-socket \
-              -Dsonar.sources=src/ \
-              -Dsonar.host.url=https://sonarqube.webux.lab \
-              -Dsonar.login=jenkins"
+              sh "${tool("sonarqube")}/bin/sonar-scanner"            
               }
         }
       }
