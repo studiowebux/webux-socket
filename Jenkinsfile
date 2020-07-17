@@ -29,7 +29,7 @@ pipeline {
       steps {
         script {
           def scannerHome = tool 'sonarqube';
-              withSonarQubeEnv("sonarqube-container") {
+              withSonarQubeEnv("sonarqube") {
               sh "${tool("sonarqube")}/bin/sonar-scanner \
               -Dsonar.projectKey=webux-socket \
               -Dsonar.sources=src/ \
