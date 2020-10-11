@@ -11,6 +11,8 @@ const fs = require('fs');
 const path = require('path');
 const { FirstLetterCaps } = require('../lib/helpers');
 
+const slash = process.platform === 'win32' ? '\\' : '/';
+
 // List of words prohibited,
 // this is according of the socket.io documentation
 const reserved = [
@@ -96,7 +98,7 @@ function AttachAction(
     let parentFolder = '';
     if (!ignoreFirstDirectory) {
       parentFolder = FirstLetterCaps(parent)
-        + FirstLetterCaps(_path.split('/')[_path.split('/').length - 1]);
+        + FirstLetterCaps(_path.split(slash)[_path.split(slash).length - 1]);
 
       log.debug(
         `webux-socket - 'AttachAction' - Current Parent Folder "${parentFolder}"`,
@@ -109,7 +111,7 @@ function AttachAction(
     actions.forEach((_method) => {
       if (
         !_method.includes('.js')
-        || !require(path.join(_path, _method)).socket
+        || !require(path.resolve(path.join(_path, _method))).socket
       ) {
         if (
           fs.existsSync(path.join(_path, _method))
@@ -142,7 +144,7 @@ function AttachAction(
       return SocketOn(
         socket,
         name,
-        require(path.join(_path, _method)).socket(socket, io),
+        require(path.resolve(path.join(_path, _method))).socket(socket, io),
         log,
       );
     });
@@ -150,16 +152,16 @@ function AttachAction(
     fs.existsSync(path.join(_path))
     && fs.lstatSync(path.join(_path)).isFile()
     && _path.includes('.js')
-    && require(path.join(_path)).socket
+    && require(path.resolve(path.join(_path))).socket
   ) {
     const parentFolder = FirstLetterCaps(
-      _path.split('/')[_path.split('/').length - 2],
+      _path.split(slash)[_path.split(slash).length - 2],
     );
     log.debug(
       `webux-socket - 'AttachAction' - Current Parent Folder "${parentFolder}"`,
     );
 
-    const method = _path.split('/')[_path.split('/').length - 1];
+    const method = _path.split(slash)[_path.split(slash).length - 1];
 
     log.debug(
       `webux-socket - 'AttachAction' - Attaching the method "${method}"`,
@@ -174,7 +176,7 @@ function AttachAction(
     return SocketOn(
       socket,
       name,
-      require(path.join(_path)).socket(socket, io),
+      require(path.resolve(path.join(_path))).socket(socket, io),
       log,
     );
   } else {

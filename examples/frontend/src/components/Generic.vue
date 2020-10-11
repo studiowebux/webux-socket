@@ -59,7 +59,7 @@ export default {
       this.$store.dispatch("setLoading");
       console.log(this.$socket);
       console.log(this.$sockets);
-      this.$socket.default.emit("findUser");
+      this.$socket.emit("findUser");
       this.$socket.profile.emit("findProfile");
     }
   }

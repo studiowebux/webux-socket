@@ -17,7 +17,7 @@ export default {
         setCookies(result.data.accessToken);
       })
       .then(() => {
-        this.$socket.default.connect();
+        this.$socket.connect();
         this.$socket.profile.connect();
         this.$socket.general.connect();
       });

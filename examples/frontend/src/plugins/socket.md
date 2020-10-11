@@ -67,7 +67,7 @@ Vue.use(
 
 app.vue
 
-this.$socket.default.connect();
+this.$socket.connect();
 this.$socket.profile.connect();
 
 main.js
@@ -79,7 +79,7 @@ Generic.js
 mounted() {
     if (!this.$store.getters.userInit || !this.$store.getters.profileInit) {
       this.$store.dispatch("setLoading");
-      this.$socket.default.emit("findUser");
+      this.$socket.emit("findUser");
       this.$socket.profile.emit("findProfile");
     }
   }
