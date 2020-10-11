@@ -71,7 +71,7 @@ pipeline {
           ''')
         }
         sh "npm version ${env.RELEASE_SCOPE}"
-        sh 'npm publish --registry=https://npm.webux.lab'
+        // sh 'npm publish --registry=https://npm.webux.lab'
         input 'Deploy to  production ?'
       }
     }
